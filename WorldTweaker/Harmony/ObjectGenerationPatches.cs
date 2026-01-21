@@ -10,9 +10,9 @@ namespace WorldTweaker.Harmony
 		{
 			foreach (var obj in __instance.objTypes)
 			{
-				Logging.Log($"[PRE] Obj {obj.prefab.name}, chance: {obj.chance}");
+				Logging.LogDebug($"[PRE] Obj {obj.prefab.name}, chance: {obj.chance}");
 				obj.chance *= WorldTweaker.I.ObjChanceFactor;
-				Logging.Log($"[POST] Obj {obj.prefab.name}, chance: {obj.chance}");
+				Logging.LogDebug($"[POST] Obj {obj.prefab.name}, chance: {obj.chance}");
 			}
 		}
 	}

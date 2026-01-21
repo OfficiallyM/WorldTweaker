@@ -5,8 +5,12 @@
 		public static void Log(string message, TLDLoader.Logger.LogLevel logLevel = TLDLoader.Logger.LogLevel.Info) =>
 			WorldTweaker.I.Logger.Log(message, logLevel);
 
-		public static void LogDebug(string message) =>
+		public static void LogDebug(string message)
+		{
+#if DEBUG
 			WorldTweaker.I.Logger.LogDebug(message);
+#endif
+		}
 
 		public static void LogInfo(string message) =>
 			WorldTweaker.I.Logger.LogInfo(message);
