@@ -31,13 +31,15 @@ namespace WorldTweaker.Core
 		public List<Savable> Data { get; set; }
 	}
 
-	internal class RoadData : Savable
+	internal class WorldData : Savable
 	{
 		public float Length { get; set; }
+		public float ObjChanceFactor { get; set; }
 
-		public RoadData(float length)
+		public WorldData(float length, float objChanceFactor)
 		{
 			Length = length;
+			ObjChanceFactor = objChanceFactor;
 		}
 	}
 }

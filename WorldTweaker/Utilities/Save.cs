@@ -145,12 +145,12 @@ namespace WorldTweaker.Utilities
 		}
 
 		/// <summary>
-		/// Get tiredness data.
+		/// Get world data.
 		/// </summary>
-		/// <returns>Tiredness data if exists, otherwise null</returns>
-		public static RoadData GetRoadData()
+		/// <returns>World data if exists, otherwise null</returns>
+		public static WorldData GetWorldData()
 		{
-			return (RoadData)GetData(nameof(RoadData));
+			return (WorldData)GetData(nameof(WorldData));
 		}
 
 		/// <summary>

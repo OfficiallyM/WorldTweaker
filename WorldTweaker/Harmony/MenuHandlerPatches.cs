@@ -12,14 +12,16 @@ namespace WorldTweaker.Harmony
 			// Don't try loading save data for new games.
 			if (!__instance.DFMS.load) return;
 
-			RoadData roadData = Save.GetRoadData();
-			if (roadData != null)
+			WorldData worldData = Save.GetWorldData();
+			if (worldData != null)
 			{
-				WorldTweaker.I.RoadLength = roadData.Length;
+				WorldTweaker.I.RoadLength = worldData.Length;
+				WorldTweaker.I.ObjChanceFactor = worldData.ObjChanceFactor;
 			}
 			else
 			{
 				WorldTweaker.I.RoadLength = 5000000;
+				WorldTweaker.I.ObjChanceFactor = 1f;
 			}
 		}
 	}

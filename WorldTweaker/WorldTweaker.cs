@@ -34,11 +34,28 @@ namespace WorldTweaker
 		private List<float> _lengthKeys;
 		private int _selectedLength = 4;
 
+		internal float ObjChanceFactor = 1f;
+		private Dictionary<float, string> _objFactors = new Dictionary<float, string>()
+		{
+			{ 0f, "Zero" },
+			{ 0.1f, "1/10 vanilla" },
+			{ 0.25f, "1/4 vanilla" },
+			{ 0.5f, "1/2 vanilla" },
+			{ 1f, "Vanilla" },
+			{ 2f, "2x vanilla" },
+			{ 5f, "5x vanilla" },
+			{ 10f, "10x vanilla (insane)" },
+			{ 100f, "100x vanilla (painfully slow)" },
+		};
+		private List<float> _objFactorKeys;
+		private int _selectedObjFactor = 4;
+
 		public WorldTweaker()
 		{
 			I = this;
 
 			_lengthKeys = _lengths.Keys.OrderBy(v => v).ToList();
+			_objFactorKeys = _objFactors.Keys.OrderBy(v => v).ToList();
 		}
 
 		public override void OnMenuLoad()
@@ -51,7 +68,7 @@ namespace WorldTweaker
 			// Don't save data for loaded saves.
 			if (mainscript.M.load) return;
 
-			Save.Upsert(new RoadData(RoadLength));
+			Save.Upsert(new WorldData(RoadLength, ObjChanceFactor));
 		}
 
 		public override void Update()
@@ -73,10 +90,19 @@ namespace WorldTweaker
 				GUILayout.BeginArea(new Rect(x, y, width, height), $"<size=16><b>World settings</b></size>", "box");
 				GUILayout.BeginVertical();
 				GUILayout.Space(10);
+
 				GUILayout.Label("Road length");
 				_selectedLength = Mathf.RoundToInt(GUILayout.HorizontalSlider(_selectedLength, 0, _lengthKeys.Count - 1));
 				RoadLength = _lengthKeys[_selectedLength];
 				GUILayout.Label(_lengths[RoadLength]);
+				GUILayout.Space(10);
+
+				GUILayout.Label("Object density (cacti, rocks, etc)");
+				_selectedObjFactor = Mathf.RoundToInt(GUILayout.HorizontalSlider(_selectedObjFactor, 0, _objFactorKeys.Count - 1));
+				ObjChanceFactor = _objFactorKeys[_selectedObjFactor];
+				GUILayout.Label(_objFactors[ObjChanceFactor]);
+				GUILayout.Space(10);
+
 				GUILayout.EndVertical();
 				GUILayout.EndArea();
 				return;
