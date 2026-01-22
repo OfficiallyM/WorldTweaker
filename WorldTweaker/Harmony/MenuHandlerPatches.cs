@@ -15,13 +15,17 @@ namespace WorldTweaker.Harmony
 			WorldData worldData = Save.GetWorldData();
 			if (worldData != null)
 			{
-				WorldTweaker.I.RoadLength = worldData.Length;
-				WorldTweaker.I.ObjChanceFactor = worldData.ObjChanceFactor;
+				WorldTweaker.I.RoadLength.SetValue(worldData.Length);
+				WorldTweaker.I.ObjectDensity.SetValue(worldData.ObjectDensity);
+				WorldTweaker.I.MountainDensity.SetValue(worldData.MountainDensity);
+				WorldTweaker.I.BuildingDensity.SetValue(worldData.BuildingDensity);
 			}
 			else
 			{
-				WorldTweaker.I.RoadLength = 5000000;
-				WorldTweaker.I.ObjChanceFactor = 1f;
+				WorldTweaker.I.RoadLength.SetValue(5000000);
+				WorldTweaker.I.ObjectDensity.SetValue(1f);
+				WorldTweaker.I.MountainDensity.SetValue(1f);
+				WorldTweaker.I.BuildingDensity.SetValue(1f);
 			}
 		}
 	}

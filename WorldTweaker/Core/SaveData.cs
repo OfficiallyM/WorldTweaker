@@ -34,12 +34,16 @@ namespace WorldTweaker.Core
 	internal class WorldData : Savable
 	{
 		public float Length { get; set; }
-		public float ObjChanceFactor { get; set; }
+		public float ObjectDensity { get; set; }
+		public float MountainDensity { get; set; }
+		public float BuildingDensity { get; set; }
 
-		public WorldData(float length, float objChanceFactor)
+		public WorldData(float length, float objectDensity, float mountainDensity, float buildingDensity)
 		{
 			Length = length;
-			ObjChanceFactor = objChanceFactor;
+			ObjectDensity = objectDensity;
+			MountainDensity = mountainDensity;
+			BuildingDensity = buildingDensity;
 		}
 	}
 }
