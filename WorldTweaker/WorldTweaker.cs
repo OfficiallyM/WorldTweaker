@@ -82,7 +82,7 @@ namespace WorldTweaker
 				new OptionSlider<float>(2f, "2x vanilla"),
 				new OptionSlider<float>(5f, "5x vanilla"),
 				new OptionSlider<float>(10f, "10x vanilla"),
-				new OptionSlider<float>(100f, "100x vanilla (insane)"),
+				new OptionSlider<float>(100f, "100x vanilla"),
 			},
 			4
 		);
@@ -112,6 +112,8 @@ namespace WorldTweaker
 
 		public override void OnGUI()
 		{
+			// TODO: Find a way to intercept the start button to show menu,
+			// allow setting choices then continue normal start process.
 			if (ModLoader.isOnMainMenu)
 			{
 				// Don't render the UI if any game menus are open.
