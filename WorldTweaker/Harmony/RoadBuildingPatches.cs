@@ -11,11 +11,7 @@ namespace WorldTweaker.Harmony
 		{
 			float density = WorldTweaker.I.BuildingDensity.Value;
 
-			if (density == 0)
-			{
-				__instance.generate = false;
-			}
-			else
+			if (density != 0)
 			{
 				float multiplier = 1f / Mathf.Sqrt(density);
 
@@ -31,6 +27,15 @@ namespace WorldTweaker.Harmony
 					}
 				}
 			}
+		}
+	}
+
+	[HarmonyPatch(typeof(roadBuildingScript), nameof(roadBuildingScript.PlaceOne))]
+	internal static class Patch_RoadBuildingScript_PlaceOne
+	{
+		private static bool Prefix(roadBuildingScript __instance)
+		{
+			return WorldTweaker.I.BuildingDensity.Value != 0;
 		}
 	}
 }
