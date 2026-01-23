@@ -2,6 +2,7 @@
 using System.Linq;
 using TLDLoader;
 using UnityEngine;
+using UnityEngine.UI;
 using WorldTweaker.Core;
 using WorldTweaker.UI;
 using WorldTweaker.Utilities;
@@ -20,6 +21,9 @@ namespace WorldTweaker
 		public override bool UseHarmony => true;
 
 		internal static WorldTweaker I;
+
+		internal bool InterceptStart = true;
+		internal bool ShowUI = false;
 
 		internal IndexSlider<float> RoadLength = new IndexSlider<float>(
 			"Road length",
@@ -108,14 +112,18 @@ namespace WorldTweaker
 		public override void Update()
 		{
 			Save.ExecuteQueue();
+
+			// Reset UI intercept here because OnMenuLoad() is only called once.
+			if (ModLoader.isOnMainMenu && !InterceptStart)
+				InterceptStart = true;
 		}
 
 		public override void OnGUI()
 		{
-			// TODO: Find a way to intercept the start button to show menu,
-			// allow setting choices then continue normal start process.
 			if (ModLoader.isOnMainMenu)
 			{
+				if (!ShowUI) return;
+
 				// Don't render the UI if any game menus are open.
 				if (mainmenuscript.mainmenu.SettingsScreenObj.activeSelf || mainmenuscript.mainmenu.SaveScreenObj.activeSelf) return;
 
@@ -132,10 +140,29 @@ namespace WorldTweaker
 				ObjectDensity.Render();
 				MountainDensity.Render();
 
+				GUILayout.Space(10);
+
+				GUILayout.BeginHorizontal();
+				GUILayout.FlexibleSpace();
+				if (GUILayout.Button("Start", GUILayout.MaxWidth(200), GUILayout.Height(30)))
+				{
+					InterceptStart = false;
+					ShowUI = false;
+					SetStartButtonState(true);
+					mainmenuscript.mainmenu.PressedLoadScene("SceneNewRandom");
+				}
+				GUILayout.FlexibleSpace();
+				GUILayout.EndHorizontal();
+
 				GUILayout.EndVertical();
 				GUILayout.EndArea();
 				return;
 			}
+		}
+
+		public void SetStartButtonState(bool state)
+		{
+			mainmenuscript.mainmenu.Canvas.Find($"GameObject/MainStuff/ButtonStart").gameObject.SetActive(state);
 		}
 	}
 }
