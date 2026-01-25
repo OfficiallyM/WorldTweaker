@@ -40,6 +40,16 @@ namespace WorldTweaker
 			4
 		);
 
+		internal IndexSlider<float> RoadCurvature = new IndexSlider<float>(
+			"Road curviness",
+			new List<OptionSlider<float>>
+			{
+				new OptionSlider<float>(0f, "Straight"),
+				new OptionSlider<float>(1f, "Vanilla"),
+			},
+			1
+		);
+
 		internal IndexSlider<float> ObjectDensity = new IndexSlider<float>(
 			"Object density (cacti, rocks, etc)",
 			new List<OptionSlider<float>>
@@ -128,7 +138,7 @@ namespace WorldTweaker
 				if (mainmenuscript.mainmenu.SettingsScreenObj.activeSelf || mainmenuscript.mainmenu.SaveScreenObj.activeSelf) return;
 
 				float width = 300f;
-				float height = 400f;
+				float height = 500f;
 				float x = (Screen.width / 2) - (width / 2);
 				float y = (Screen.height / 2) - (height / 2);
 				GUILayout.BeginArea(new Rect(x, y, width, height), $"<size=16><b>World settings</b></size>", "box");
@@ -136,6 +146,7 @@ namespace WorldTweaker
 				GUILayout.Space(20);
 
 				RoadLength.Render();
+				RoadCurvature.Render();
 				BuildingDensity.Render();
 				ObjectDensity.Render();
 				MountainDensity.Render();

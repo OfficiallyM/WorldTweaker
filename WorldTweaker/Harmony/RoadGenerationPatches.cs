@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System;
 using System.Linq;
 using UnityEngine;
 using WorldTweaker.Utilities;
@@ -37,6 +38,15 @@ namespace WorldTweaker.Harmony
 				// Not happy with rotation but it'll do.
 				GameObject.Instantiate(itemdatabase.d.gkezdolevel, pos + Vector3.up * 1f + Vector3.back * 3f, Quaternion.Euler(-70, 0, 90f));
 			}
+		}
+	}
+
+	[HarmonyPatch(typeof(roadGenScript), nameof(roadGenScript.OneValue), new Type[] { typeof(float) })]
+	internal static class Patch_RoadGenScript_OneValue
+	{
+		private static void Postfix(roadGenScript __instance, ref float __result, float pos)
+		{
+			__result *= WorldTweaker.I.RoadCurvature.Value;
 		}
 	}
 }
