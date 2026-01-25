@@ -19,6 +19,7 @@ namespace WorldTweaker.Harmony
 		}
 	}
 
+#if DEBUG
 	[HarmonyPatch(typeof(roadGenScript), nameof(roadGenScript.PlaceOneRoad))]
 	internal static class Patch_RoadGenScript_PlaceOneRoad
 	{
@@ -40,6 +41,7 @@ namespace WorldTweaker.Harmony
 			}
 		}
 	}
+#endif
 
 	[HarmonyPatch(typeof(roadGenScript), nameof(roadGenScript.OneValue), new Type[] { typeof(float) })]
 	internal static class Patch_RoadGenScript_OneValue
