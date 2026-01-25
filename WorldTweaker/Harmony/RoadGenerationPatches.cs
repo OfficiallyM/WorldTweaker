@@ -26,7 +26,7 @@ namespace WorldTweaker.Harmony
 			if (pi == __instance.roadNum - 1)
 			{
 				// Don't spawn mom's house on really short roads.
-				//if (__instance.roadNum < 250) return;
+				if (__instance.roadNum < 250) return;
 
 				var road = __instance.roadList[pi];
 				var bone = road.bones.Last();
