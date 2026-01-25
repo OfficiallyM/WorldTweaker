@@ -26,11 +26,11 @@ namespace WorldTweaker.Harmony
 			if (pi == __instance.roadNum - 1)
 			{
 				// Don't spawn mom's house on really short roads.
-				if (__instance.roadNum < 250) return;
+				//if (__instance.roadNum < 250) return;
 
 				var road = __instance.roadList[pi];
 				var bone = road.bones.Last();
-				Vector3 pos = bone.position + bone.up * 30f + bone.right * 2f;
+				Vector3 pos = bone.position + bone.up * 30f + bone.right * 2f + bone.forward * -2f;
 				GameObject house = GameObject.Instantiate(itemdatabase.d.bkezdohaz, pos, bone.rotation * Quaternion.Euler(0, 90f, -90f));
 				house.transform.Find("Ramp").gameObject.SetActive(false);
 
