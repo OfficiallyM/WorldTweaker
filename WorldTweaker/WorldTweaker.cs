@@ -162,7 +162,7 @@ namespace WorldTweaker
 
 		public void SetStartButtonState(bool state)
 		{
-			mainmenuscript.mainmenu.Canvas.Find($"GameObject/MainStuff/ButtonStart").gameObject.SetActive(state);
+			mainmenuscript.mainmenu.Canvas.Find("GameObject/MainStuff/ButtonStart").gameObject.SetActive(state);
 		}
 	}
 }
