@@ -138,7 +138,7 @@ namespace WorldTweaker
 				if (mainmenuscript.mainmenu.SettingsScreenObj.activeSelf || mainmenuscript.mainmenu.SaveScreenObj.activeSelf) return;
 
 				float width = 300f;
-				float height = 500f;
+				float height = 450f;
 				float x = (Screen.width / 2) - (width / 2);
 				float y = (Screen.height / 2) - (height / 2);
 				GUILayout.BeginArea(new Rect(x, y, width, height), $"<size=16><b>World settings</b></size>", "box");
@@ -167,6 +167,12 @@ namespace WorldTweaker
 
 				GUILayout.EndVertical();
 				GUILayout.EndArea();
+
+				if (GUI.Button(new Rect(x + (width - 25f), y, 25f, 25f), "X"))
+				{
+					ShowUI = false;
+					SetStartButtonState(true);
+				}
 				return;
 			}
 		}
