@@ -10,7 +10,6 @@ namespace WorldTweaker.Harmony
 		{
 			foreach (var obj in __instance.objTypes)
 			{
-				Logging.LogDebug($"[PRE] Obj {obj.prefab.name}, chance: {obj.chance}");
 				switch (__instance.gameObject.name)
 				{
 					case "G_GenerationMountains":
@@ -24,7 +23,6 @@ namespace WorldTweaker.Harmony
 						obj.chance *= WorldTweaker.I.ObjectDensity.Value;
 						break;
 				}
-				Logging.LogDebug($"[POST] Obj {obj.prefab.name}, chance: {obj.chance}");
 			}
 		}
 	}

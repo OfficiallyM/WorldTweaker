@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using WorldTweaker.Core;
 using WorldTweaker.Utilities;
+using WorldTweaker.Utilities.UI;
 
 namespace WorldTweaker.Harmony
 {
@@ -13,6 +14,7 @@ namespace WorldTweaker.Harmony
 			{
 				WorldTweaker.I.ShowUI = true;
 				WorldTweaker.I.SetStartButtonState(false);
+				Animator.Play("mainUI", Animator.AnimationState.SlideIn);
 				return false;
 			}
 			return true;

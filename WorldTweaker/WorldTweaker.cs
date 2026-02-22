@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using TLDLoader;
 using UnityEngine;
-using UnityEngine.UI;
 using WorldTweaker.Core;
 using WorldTweaker.UI;
 using WorldTweaker.Utilities;
+using WorldTweaker.Utilities.UI;
 
 namespace WorldTweaker
 {
@@ -15,7 +14,7 @@ namespace WorldTweaker
 		public override string ID => "M_WorldTweaker";
 		public override string Name => "World Tweaker";
 		public override string Author => "M-";
-		public override string Version => "1.0.0";
+		public override string Version => "1.1.0";
 		public override bool LoadInMenu => true;
 		public override bool UseLogger => true;
 		public override bool UseHarmony => true;
@@ -24,6 +23,9 @@ namespace WorldTweaker
 
 		internal bool InterceptStart = true;
 		internal bool ShowUI = false;
+
+		private string[] _tabs = { "World", "Road", "Items" };
+		private int _activeTab = 0;
 
 		internal IndexSlider<float> RoadLength = new IndexSlider<float>(
 			"Road length",
@@ -101,6 +103,23 @@ namespace WorldTweaker
 			4
 		);
 
+		internal IndexSlider<float> ItemSpawnRate = new IndexSlider<float>(
+			"Item spawn rate",
+			new List<OptionSlider<float>>
+			{
+				new OptionSlider<float>(0f, "Zero"),
+				new OptionSlider<float>(0.1f, "1/10 vanilla"),
+				new OptionSlider<float>(0.25f, "1/4 vanilla"),
+				new OptionSlider<float>(0.5f, "1/2 vanilla"),
+				new OptionSlider<float>(1f, "Vanilla"),
+				new OptionSlider<float>(2f, "2x vanilla"),
+				new OptionSlider<float>(5f, "5x vanilla"),
+				new OptionSlider<float>(10f, "10x vanilla"),
+				new OptionSlider<float>(100f, "100x vanilla"),
+			},
+			4
+		);
+
 		public WorldTweaker()
 		{
 			I = this;
@@ -116,7 +135,7 @@ namespace WorldTweaker
 			// Don't save data for loaded saves.
 			if (mainscript.M.load) return;
 
-			Save.Upsert(new WorldData(RoadLength.Value, ObjectDensity.Value, MountainDensity.Value, BuildingDensity.Value));
+			Save.Upsert(new WorldData(RoadLength.Value, RoadCurvature.Value, ObjectDensity.Value, MountainDensity.Value, BuildingDensity.Value, ItemSpawnRate.Value));
 		}
 
 		public override void Update()
@@ -130,51 +149,95 @@ namespace WorldTweaker
 
 		public override void OnGUI()
 		{
-			if (ModLoader.isOnMainMenu)
-			{
-				if (!ShowUI) return;
+			Styling.Bootstrap();
+			GUI.skin = Styling.GetSkin();
 
-				// Don't render the UI if any game menus are open.
-				if (mainmenuscript.mainmenu.SettingsScreenObj.activeSelf || mainmenuscript.mainmenu.SaveScreenObj.activeSelf) return;
+			if (ModLoader.isOnMainMenu && (ShowUI || !Animator.IsIdle("mainUI")))
+				RenderMenu();
 
-				float width = 300f;
-				float height = 450f;
-				float x = (Screen.width / 2) - (width / 2);
-				float y = (Screen.height / 2) - (height / 2);
-				GUILayout.BeginArea(new Rect(x, y, width, height), $"<size=16><b>World settings</b></size>", "box");
-				GUILayout.BeginVertical();
-				GUILayout.Space(20);
+			// Reset back to default Unity skin to avoid styling bleeding to other UI mods.
+			GUI.skin = null;
+		}
 
-				RoadLength.Render();
-				RoadCurvature.Render();
-				BuildingDensity.Render();
-				ObjectDensity.Render();
-				MountainDensity.Render();
+		private void RenderMenu()
+		{
+			// Don't render the UI if any game menus are open.
+			if (mainmenuscript.mainmenu.SettingsScreenObj.activeSelf || mainmenuscript.mainmenu.SaveScreenObj.activeSelf) return;
 
-				GUILayout.Space(10);
+			float width = Screen.width * 0.25f;
+			float height = Screen.height * 0.75f;
+			float x = Screen.width / 2 - width / 2;
+			float y = Screen.height / 2 - height / 2;
+			Rect targetRect = new Rect(x, y, width, height);
+			Rect animatedRect = Animator.Slide("mainUI", targetRect, Animator.SlideDirection.Bottom);
 
-				GUILayout.BeginHorizontal();
-				GUILayout.FlexibleSpace();
-				if (GUILayout.Button("Start", GUILayout.MaxWidth(200), GUILayout.Height(30)))
-				{
-					InterceptStart = false;
-					ShowUI = false;
-					SetStartButtonState(true);
-					mainmenuscript.mainmenu.PressedLoadScene("SceneNewRandom");
-				}
-				GUILayout.FlexibleSpace();
-				GUILayout.EndHorizontal();
-
-				GUILayout.EndVertical();
-				GUILayout.EndArea();
-
-				if (GUI.Button(new Rect(x + (width - 25f), y, 25f, 25f), "X"))
-				{
-					ShowUI = false;
-					SetStartButtonState(true);
-				}
+			if (!ShowUI && Animator.IsIdle("mainUI"))
 				return;
+
+			GUILayout.BeginArea(animatedRect, $"<color=#f87ffa><size=18><b>{Name}</b></size>\n<size=16>Made with ❤️ by {Author}</size></color>", "box");
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			if (GUILayout.Button("X", GUILayout.ExpandWidth(false)))
+			{
+				ShowUI = false;
+				SetStartButtonState(true);
+				Animator.Play("mainUI", Animator.AnimationState.SlideOut);
 			}
+			GUILayout.EndHorizontal();
+			GUILayout.BeginVertical();
+			GUILayout.Space(15);
+			GUILayout.BeginHorizontal();
+			GUILayout.Space(5);
+			for (int i = 0; i < _tabs.Length; i++)
+			{
+				if (GUILayout.Button(_tabs[i], _activeTab == i ? "ButtonSecondary" : "button"))
+					_activeTab = i;
+			}
+			GUILayout.Space(5);
+			GUILayout.EndHorizontal();
+
+			switch (_activeTab)
+			{
+				case 0: RenderWorldMenu(); break;
+				case 1: RenderRoadMenu(); break;
+				case 2: RenderItemsMenu(); break;
+			}
+
+			GUILayout.FlexibleSpace();
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			if (GUILayout.Button("Start", "ButtonPrimaryLarge", GUILayout.MaxWidth(200), GUILayout.Height(40)))
+			{
+				InterceptStart = false;
+				ShowUI = false;
+				SetStartButtonState(true);
+				Animator.Reset("mainUI");
+				mainmenuscript.mainmenu.PressedLoadScene("SceneNewRandom");
+			}
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			GUILayout.Space(5);
+			GUILayout.Label($"<color=#f87ffa><size=16>v{Version}</size></color>", "LabelCenter");
+			GUILayout.EndVertical();
+			GUILayout.EndArea();
+		}
+
+		private void RenderWorldMenu()
+		{
+			BuildingDensity.Render();
+			ObjectDensity.Render();
+			MountainDensity.Render();
+		}
+
+		private void RenderRoadMenu()
+		{
+			RoadLength.Render();
+			RoadCurvature.Render();
+		}
+
+		private void RenderItemsMenu()
+		{
+			ItemSpawnRate.Render();
 		}
 
 		public void SetStartButtonState(bool state)

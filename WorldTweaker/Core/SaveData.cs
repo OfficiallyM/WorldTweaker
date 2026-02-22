@@ -34,16 +34,20 @@ namespace WorldTweaker.Core
 	internal class WorldData : Savable
 	{
 		public float Length { get; set; }
+		public float RoadCurvature { get; set; }
 		public float ObjectDensity { get; set; }
 		public float MountainDensity { get; set; }
 		public float BuildingDensity { get; set; }
+		public float ItemSpawnRate { get; set; }
 
-		public WorldData(float length, float objectDensity, float mountainDensity, float buildingDensity)
+		public WorldData(float length, float roadCurvature, float objectDensity, float mountainDensity, float buildingDensity, float itemSpawnRate)
 		{
 			Length = length;
+			RoadCurvature = roadCurvature;
 			ObjectDensity = objectDensity;
 			MountainDensity = mountainDensity;
 			BuildingDensity = buildingDensity;
+			ItemSpawnRate = itemSpawnRate;
 		}
 	}
 }

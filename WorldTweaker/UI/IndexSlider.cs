@@ -7,6 +7,7 @@ namespace WorldTweaker.UI
 	internal sealed class IndexSlider<T>
 	{
 		public string Title { get; }
+		public string Description { get; }
 		public List<OptionSlider<T>> Options { get; }
 		public int SelectedIndex { get; private set; }
 
@@ -19,11 +20,21 @@ namespace WorldTweaker.UI
 			SelectedIndex = defaultIndex;
 		}
 
+		public IndexSlider(string title, string description, List<OptionSlider<T>> options, int defaultIndex)
+		{
+			Title = title;
+			Description = description;
+			Options = options;
+			SelectedIndex = defaultIndex;
+		}
+
 		public void Render()
 		{
-			GUILayout.Label(Title);
+			GUILayout.Label(Title, "LabelSubHeaderCenter");
+			if (!string.IsNullOrEmpty(Description))
+				GUILayout.Label(Description);
 			SelectedIndex = Mathf.RoundToInt(GUILayout.HorizontalSlider(SelectedIndex, 0, Options.Count - 1));
-			GUILayout.Label(Options[SelectedIndex].Label);
+			GUILayout.Label(Options[SelectedIndex].Label, "LabelCenter");
 			GUILayout.Space(10);
 		}
 

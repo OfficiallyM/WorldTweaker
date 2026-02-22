@@ -11,11 +11,9 @@ namespace WorldTweaker.Harmony
 	{
 		private static void Prefix(roadGenScript __instance)
 		{
-			Logging.LogDebug($"Current length: {__instance.length} ({__instance.length / 1000}km)");
 			float newLength = WorldTweaker.I.RoadLength.Value;
 			__instance.scale = __instance.scale * (__instance.length / newLength);
 			__instance.length = newLength;
-			Logging.LogDebug($"New length: {__instance.length} ({__instance.length / 1000}km)");
 		}
 	}
 
