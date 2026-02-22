@@ -59,14 +59,17 @@ namespace WorldTweaker
 				new OptionSlider<float>(0f, "Zero"),
 				new OptionSlider<float>(0.1f, "1/10 vanilla"),
 				new OptionSlider<float>(0.25f, "1/4 vanilla"),
+				new OptionSlider<float>(0.33f, "1/3 vanilla"),
 				new OptionSlider<float>(0.5f, "1/2 vanilla"),
+				new OptionSlider<float>(0.75f, "3/4 vanilla"),
 				new OptionSlider<float>(1f, "Vanilla"),
+				new OptionSlider<float>(1.5f, "1.5x vanilla"),
 				new OptionSlider<float>(2f, "2x vanilla"),
 				new OptionSlider<float>(5f, "5x vanilla"),
 				new OptionSlider<float>(10f, "10x vanilla"),
 				new OptionSlider<float>(100f, "100x vanilla (painfully slow to load)"),
 			},
-			4
+			6
 		);
 
 		internal IndexSlider<float> MountainDensity = new IndexSlider<float>(
@@ -76,14 +79,17 @@ namespace WorldTweaker
 				new OptionSlider<float>(0f, "Zero"),
 				new OptionSlider<float>(0.1f, "1/10 vanilla"),
 				new OptionSlider<float>(0.25f, "1/4 vanilla"),
+				new OptionSlider<float>(0.33f, "1/3 vanilla"),
 				new OptionSlider<float>(0.5f, "1/2 vanilla"),
+				new OptionSlider<float>(0.75f, "3/4 vanilla"),
 				new OptionSlider<float>(1f, "Vanilla"),
+				new OptionSlider<float>(1.5f, "1.5x vanilla"),
 				new OptionSlider<float>(2f, "2x vanilla"),
 				new OptionSlider<float>(5f, "5x vanilla"),
 				new OptionSlider<float>(10f, "10x vanilla"),
 				new OptionSlider<float>(100f, "100x vanilla (painfully slow to load)"),
 			},
-			4
+			6
 		);
 
 		internal IndexSlider<float> BuildingDensity = new IndexSlider<float>(
@@ -93,14 +99,17 @@ namespace WorldTweaker
 				new OptionSlider<float>(0f, "Zero"),
 				new OptionSlider<float>(0.1f, "1/10 vanilla"),
 				new OptionSlider<float>(0.25f, "1/4 vanilla"),
+				new OptionSlider<float>(0.33f, "1/3 vanilla"),
 				new OptionSlider<float>(0.5f, "1/2 vanilla"),
+				new OptionSlider<float>(0.75f, "3/4 vanilla"),
 				new OptionSlider<float>(1f, "Vanilla"),
+				new OptionSlider<float>(1.5f, "1.5x vanilla"),
 				new OptionSlider<float>(2f, "2x vanilla"),
 				new OptionSlider<float>(5f, "5x vanilla"),
 				new OptionSlider<float>(10f, "10x vanilla"),
 				new OptionSlider<float>(100f, "100x vanilla"),
 			},
-			4
+			6
 		);
 
 		internal IndexSlider<float> ItemSpawnRate = new IndexSlider<float>(
@@ -110,14 +119,38 @@ namespace WorldTweaker
 				new OptionSlider<float>(0f, "Zero"),
 				new OptionSlider<float>(0.1f, "1/10 vanilla"),
 				new OptionSlider<float>(0.25f, "1/4 vanilla"),
+				new OptionSlider<float>(0.33f, "1/3 vanilla"),
 				new OptionSlider<float>(0.5f, "1/2 vanilla"),
+				new OptionSlider<float>(0.75f, "3/4 vanilla"),
 				new OptionSlider<float>(1f, "Vanilla"),
+				new OptionSlider<float>(1.5f, "1.5x vanilla"),
 				new OptionSlider<float>(2f, "2x vanilla"),
 				new OptionSlider<float>(5f, "5x vanilla"),
 				new OptionSlider<float>(10f, "10x vanilla"),
 				new OptionSlider<float>(100f, "100x vanilla"),
 			},
-			4
+			6
+		);
+
+		internal IndexSlider<float> FluidAmount = new IndexSlider<float>(
+			"Fluid amount",
+			"Controls how full randomised fluid containers are",
+			new List<OptionSlider<float>>
+			{
+				new OptionSlider<float>(0f, "Always empty"),
+				new OptionSlider<float>(0.1f, "1/10 vanilla"),
+				new OptionSlider<float>(0.25f, "1/4 vanilla"),
+				new OptionSlider<float>(0.33f, "1/3 vanilla"),
+				new OptionSlider<float>(0.5f, "1/2 vanilla"),
+				new OptionSlider<float>(0.75f, "3/4 vanilla"),
+				new OptionSlider<float>(1f, "Vanilla"),
+				new OptionSlider<float>(1.5f, "1.5x vanilla"),
+				new OptionSlider<float>(2f, "2x vanilla"),
+				new OptionSlider<float>(5f, "5x vanilla"),
+				new OptionSlider<float>(10f, "10x vanilla"),
+				new OptionSlider<float>(100f, "100x vanilla"),
+			},
+			6
 		);
 
 		public WorldTweaker()
@@ -135,7 +168,7 @@ namespace WorldTweaker
 			// Don't save data for loaded saves.
 			if (mainscript.M.load) return;
 
-			Save.Upsert(new WorldData(RoadLength.Value, RoadCurvature.Value, ObjectDensity.Value, MountainDensity.Value, BuildingDensity.Value, ItemSpawnRate.Value));
+			Save.Upsert(new WorldData(RoadLength.Value, RoadCurvature.Value, ObjectDensity.Value, MountainDensity.Value, BuildingDensity.Value, ItemSpawnRate.Value, FluidAmount.Value));
 		}
 
 		public override void Update()
@@ -238,6 +271,7 @@ namespace WorldTweaker
 		private void RenderItemsMenu()
 		{
 			ItemSpawnRate.Render();
+			FluidAmount.Render();
 		}
 
 		public void SetStartButtonState(bool state)

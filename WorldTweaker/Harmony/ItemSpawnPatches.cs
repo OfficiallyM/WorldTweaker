@@ -13,4 +13,15 @@ namespace WorldTweaker.Harmony
 			__instance.chanceToSpawn *= rate;
 		}
 	}
+
+	[HarmonyPatch(typeof(tankscript), nameof(tankscript.RandomFluid))]
+	internal static class Patch_tankscript_RandomFluid
+	{
+		private static void Prefix(tankscript __instance)
+		{
+			float amount = WorldTweaker.I.FluidAmount.Value;
+			__instance.minFluid *= amount;
+			__instance.maxFluid *= amount;
+		}
+	}
 }

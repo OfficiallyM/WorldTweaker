@@ -21,6 +21,7 @@ namespace WorldTweaker.Harmony
 				WorldTweaker.I.MountainDensity.SetValue(worldData.MountainDensity);
 				WorldTweaker.I.BuildingDensity.SetValue(worldData.BuildingDensity);
 				WorldTweaker.I.ItemSpawnRate.SetValue(worldData.ItemSpawnRate);
+				WorldTweaker.I.FluidAmount.SetValue(worldData.FluidAmount);
 			}
 			else
 			{
@@ -30,6 +31,7 @@ namespace WorldTweaker.Harmony
 				WorldTweaker.I.MountainDensity.SetValue(1f);
 				WorldTweaker.I.BuildingDensity.SetValue(1f);
 				WorldTweaker.I.ItemSpawnRate.SetValue(1f);
+				WorldTweaker.I.FluidAmount.SetValue(1f);
 			}
 		}
 	}

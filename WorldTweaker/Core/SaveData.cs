@@ -39,8 +39,17 @@ namespace WorldTweaker.Core
 		public float MountainDensity { get; set; }
 		public float BuildingDensity { get; set; }
 		public float ItemSpawnRate { get; set; }
+		public float FluidAmount { get; set; }
 
-		public WorldData(float length, float roadCurvature, float objectDensity, float mountainDensity, float buildingDensity, float itemSpawnRate)
+		public WorldData(
+			float length,
+			float roadCurvature,
+			float objectDensity,
+			float mountainDensity,
+			float buildingDensity,
+			float itemSpawnRate,
+			float fluidAmount
+		)
 		{
 			Length = length;
 			RoadCurvature = roadCurvature;
@@ -48,6 +57,7 @@ namespace WorldTweaker.Core
 			MountainDensity = mountainDensity;
 			BuildingDensity = buildingDensity;
 			ItemSpawnRate = itemSpawnRate;
+			FluidAmount = fluidAmount;
 		}
 	}
 }

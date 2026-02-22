@@ -32,7 +32,7 @@ namespace WorldTweaker.UI
 		{
 			GUILayout.Label(Title, "LabelSubHeaderCenter");
 			if (!string.IsNullOrEmpty(Description))
-				GUILayout.Label(Description);
+				GUILayout.Label(Description, "LabelCenter");
 			SelectedIndex = Mathf.RoundToInt(GUILayout.HorizontalSlider(SelectedIndex, 0, Options.Count - 1));
 			GUILayout.Label(Options[SelectedIndex].Label, "LabelCenter");
 			GUILayout.Space(10);
