@@ -125,6 +125,18 @@ namespace WorldTweaker
 			6
 		);
 
+		internal IndexSlider<float> WorldType = new IndexSlider<float>(
+			"World type",
+			new List<OptionSlider<float>>
+			{
+				new OptionSlider<float>(0f, "Flat"),
+				new OptionSlider<float>(1f, "Vanilla"),
+				new OptionSlider<float>(0.85f, "Canyon"),
+				new OptionSlider<float>(1.1f, "Road bridge"),
+			},
+			1
+		);
+
 		internal IndexSlider<float> ItemSpawnRate = new IndexSlider<float>(
 			"Item spawn rate",
 			new List<OptionSlider<float>>
@@ -321,6 +333,7 @@ namespace WorldTweaker
 			BuildingDensity.Render();
 			ObjectDensity.Render();
 			MountainDensity.Render();
+			WorldType.Render();
 		}
 
 		private void RenderRoadMenu()
@@ -347,7 +360,16 @@ namespace WorldTweaker
 
 		public void UpdateSaveData()
 		{
-			Save.Upsert(new WorldData(RoadLength.Value, RoadCurvature.Value, ObjectDensity.Value, MountainDensity.Value, BuildingDensity.Value, ItemSpawnRate.Value, FluidAmount.Value));
+			Save.Upsert(new WorldData(
+				RoadLength.Value,
+				RoadCurvature.Value,
+				ObjectDensity.Value,
+				MountainDensity.Value,
+				BuildingDensity.Value,
+				WorldType.Value,
+				ItemSpawnRate.Value,
+				FluidAmount.Value
+			));
 		}
 	}
 }

@@ -38,6 +38,7 @@ namespace WorldTweaker.Core
 		public float? ObjectDensity { get; set; }
 		public float? MountainDensity { get; set; }
 		public float? BuildingDensity { get; set; }
+		public float? WorldType { get; set; }
 		public float? ItemSpawnRate { get; set; }
 		public float? FluidAmount { get; set; }
 
@@ -47,6 +48,7 @@ namespace WorldTweaker.Core
 			float? objectDensity,
 			float? mountainDensity,
 			float? buildingDensity,
+			float? worldType,
 			float? itemSpawnRate,
 			float? fluidAmount
 		)
@@ -56,6 +58,7 @@ namespace WorldTweaker.Core
 			ObjectDensity = objectDensity;
 			MountainDensity = mountainDensity;
 			BuildingDensity = buildingDensity;
+			WorldType = worldType;
 			ItemSpawnRate = itemSpawnRate;
 			FluidAmount = fluidAmount;
 		}
