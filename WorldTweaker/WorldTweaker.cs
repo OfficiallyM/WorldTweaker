@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TLDLoader;
 using UnityEngine;
 using WorldTweaker.Core;
@@ -21,11 +22,23 @@ namespace WorldTweaker
 
 		internal static WorldTweaker I;
 
+		internal static bool IsOnMenu => mainscript.M == null;
+		internal static bool IsPaused
+		{
+			get
+			{
+				var menu = mainscript.M?.menu?.Menu;
+				return menu != null && menu.activeSelf;
+			}
+		}
+
 		internal bool InterceptStart = true;
 		internal bool ShowUI = false;
 
 		private string[] _tabs = { "World", "Road", "Items" };
 		private int _activeTab = 0;
+		private int[] _gameTabs = { 2 };
+		private bool _hasAchievementsMod = false;
 
 		internal IndexSlider<float> RoadLength = new IndexSlider<float>(
 			"Road length",
@@ -160,7 +173,14 @@ namespace WorldTweaker
 
 		public override void OnMenuLoad()
 		{
-			Logging.LogDebug("OnMenuLoad()");
+			foreach (var mod in ModLoader.LoadedMods)
+			{
+				if (mod.ID == "M_Achievements")
+				{
+					_hasAchievementsMod = true;
+					break;
+				}
+			}
 		}
 
 		public override void OnLoad()
@@ -168,7 +188,7 @@ namespace WorldTweaker
 			// Don't save data for loaded saves.
 			if (mainscript.M.load) return;
 
-			Save.Upsert(new WorldData(RoadLength.Value, RoadCurvature.Value, ObjectDensity.Value, MountainDensity.Value, BuildingDensity.Value, ItemSpawnRate.Value, FluidAmount.Value));
+			UpdateSaveData();
 		}
 
 		public override void Update()
@@ -176,8 +196,38 @@ namespace WorldTweaker
 			Save.ExecuteQueue();
 
 			// Reset UI intercept here because OnMenuLoad() is only called once.
-			if (ModLoader.isOnMainMenu && !InterceptStart)
+			if (IsOnMenu && !InterceptStart)
 				InterceptStart = true;
+
+			if (ShowUI && Input.GetButtonDown("Cancel"))
+				ToggleUI(false);
+		}
+
+		internal void ToggleUI(bool? force = null, bool animate = true)
+		{
+			ShowUI = force ?? !ShowUI;
+			SetStartButtonState(!ShowUI);
+
+			if (!IsOnMenu)
+			{
+				if (ShowUI && IsPaused)
+					mainscript.M.PressedEscape();
+
+				mainscript.M.crsrLocked = !ShowUI;
+				mainscript.M.SetCursorVisible(ShowUI);
+				mainscript.M.menu.gameObject.SetActive(!ShowUI);
+			}
+
+			if (!animate)
+			{
+				Animator.Reset("mainUI");
+				return;
+			}
+
+			if (ShowUI)
+				Animator.Play("mainUI", Animator.AnimationState.SlideIn);
+			else
+				Animator.Play("mainUI", Animator.AnimationState.SlideOut);
 		}
 
 		public override void OnGUI()
@@ -185,7 +235,11 @@ namespace WorldTweaker
 			Styling.Bootstrap();
 			GUI.skin = Styling.GetSkin();
 
-			if (ModLoader.isOnMainMenu && (ShowUI || !Animator.IsIdle("mainUI")))
+			Rect buttonRect = new Rect(Screen.width * 0.70f, _hasAchievementsMod ? 70f : 10f, 200, 50);
+			if (!IsOnMenu && IsPaused && GUI.Button(buttonRect, "World Tweaker", "ButtonSecondary"))
+				ToggleUI();
+
+			if (ShowUI || !Animator.IsIdle("mainUI"))
 				RenderMenu();
 
 			// Reset back to default Unity skin to avoid styling bleeding to other UI mods.
@@ -195,7 +249,8 @@ namespace WorldTweaker
 		private void RenderMenu()
 		{
 			// Don't render the UI if any game menus are open.
-			if (mainmenuscript.mainmenu.SettingsScreenObj.activeSelf || mainmenuscript.mainmenu.SaveScreenObj.activeSelf) return;
+			if (IsOnMenu && (mainmenuscript.mainmenu.SettingsScreenObj.activeSelf || mainmenuscript.mainmenu.SaveScreenObj.activeSelf)) 
+				return;
 
 			float width = Screen.width * 0.25f;
 			float height = Screen.height * 0.75f;
@@ -211,11 +266,7 @@ namespace WorldTweaker
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("X", GUILayout.ExpandWidth(false)))
-			{
-				ShowUI = false;
-				SetStartButtonState(true);
-				Animator.Play("mainUI", Animator.AnimationState.SlideOut);
-			}
+				ToggleUI(false);
 			GUILayout.EndHorizontal();
 			GUILayout.BeginVertical();
 			GUILayout.Space(15);
@@ -223,6 +274,13 @@ namespace WorldTweaker
 			GUILayout.Space(5);
 			for (int i = 0; i < _tabs.Length; i++)
 			{
+				if (!IsOnMenu && Array.IndexOf(_gameTabs, i) == -1)
+				{
+					if (_activeTab == i)
+						_activeTab = _gameTabs[0];
+					continue;
+				}
+
 				if (GUILayout.Button(_tabs[i], _activeTab == i ? "ButtonSecondary" : "button"))
 					_activeTab = i;
 			}
@@ -239,13 +297,16 @@ namespace WorldTweaker
 			GUILayout.FlexibleSpace();
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			if (GUILayout.Button("Start", "ButtonPrimaryLarge", GUILayout.MaxWidth(200), GUILayout.Height(40)))
+			if (IsOnMenu && GUILayout.Button("Start", "ButtonPrimaryLarge", GUILayout.MaxWidth(200), GUILayout.Height(40)))
 			{
 				InterceptStart = false;
-				ShowUI = false;
-				SetStartButtonState(true);
-				Animator.Reset("mainUI");
+				ToggleUI(false, false);
 				mainmenuscript.mainmenu.PressedLoadScene("SceneNewRandom");
+			}
+			if (!IsOnMenu && GUILayout.Button("Apply", "ButtonPrimaryLarge", GUILayout.MaxWidth(200), GUILayout.Height(40)))
+			{
+				UpdateSaveData();
+				ToggleUI(false);
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
@@ -270,13 +331,23 @@ namespace WorldTweaker
 
 		private void RenderItemsMenu()
 		{
+			if (!IsOnMenu)
+				GUILayout.Label("Note: Any changes made here will only apply to buildings/items not yet generated.", "LabelCenter");
+
 			ItemSpawnRate.Render();
 			FluidAmount.Render();
 		}
 
 		public void SetStartButtonState(bool state)
 		{
+			if (!IsOnMenu) return;
+
 			mainmenuscript.mainmenu.Canvas.Find("GameObject/MainStuff/ButtonStart").gameObject.SetActive(state);
+		}
+
+		public void UpdateSaveData()
+		{
+			Save.Upsert(new WorldData(RoadLength.Value, RoadCurvature.Value, ObjectDensity.Value, MountainDensity.Value, BuildingDensity.Value, ItemSpawnRate.Value, FluidAmount.Value));
 		}
 	}
 }

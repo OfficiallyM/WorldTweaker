@@ -1,6 +1,4 @@
 ﻿using HarmonyLib;
-using UnityEngine;
-using WorldTweaker.Utilities;
 
 namespace WorldTweaker.Harmony
 {

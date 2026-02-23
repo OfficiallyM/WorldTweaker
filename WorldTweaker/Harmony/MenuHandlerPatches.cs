@@ -13,26 +13,14 @@ namespace WorldTweaker.Harmony
 			if (!__instance.DFMS.load) return;
 
 			WorldData worldData = Save.GetWorldData();
-			if (worldData != null)
-			{
-				WorldTweaker.I.RoadLength.SetValue(worldData.Length);
-				WorldTweaker.I.RoadCurvature.SetValue(worldData.RoadCurvature);
-				WorldTweaker.I.ObjectDensity.SetValue(worldData.ObjectDensity);
-				WorldTweaker.I.MountainDensity.SetValue(worldData.MountainDensity);
-				WorldTweaker.I.BuildingDensity.SetValue(worldData.BuildingDensity);
-				WorldTweaker.I.ItemSpawnRate.SetValue(worldData.ItemSpawnRate);
-				WorldTweaker.I.FluidAmount.SetValue(worldData.FluidAmount);
-			}
-			else
-			{
-				WorldTweaker.I.RoadLength.SetValue(5000000);
-				WorldTweaker.I.RoadCurvature.SetValue(1f);
-				WorldTweaker.I.ObjectDensity.SetValue(1f);
-				WorldTweaker.I.MountainDensity.SetValue(1f);
-				WorldTweaker.I.BuildingDensity.SetValue(1f);
-				WorldTweaker.I.ItemSpawnRate.SetValue(1f);
-				WorldTweaker.I.FluidAmount.SetValue(1f);
-			}
+
+			WorldTweaker.I.RoadLength.SetValue(worldData?.Length ?? 5000000);
+			WorldTweaker.I.RoadCurvature.SetValue(worldData?.RoadCurvature ?? 1f);
+			WorldTweaker.I.ObjectDensity.SetValue(worldData?.ObjectDensity ?? 1f);
+			WorldTweaker.I.MountainDensity.SetValue(worldData?.MountainDensity ?? 1f);
+			WorldTweaker.I.BuildingDensity.SetValue(worldData?.BuildingDensity ?? 1f);
+			WorldTweaker.I.ItemSpawnRate.SetValue(worldData?.ItemSpawnRate ?? 1f);
+			WorldTweaker.I.FluidAmount.SetValue(worldData?.FluidAmount ?? 1f);
 		}
 	}
 }
