@@ -11,11 +11,15 @@ namespace WorldTweaker.Harmony
 		public static void Postfix(ref float __result)
 		{
 			float flatness = WorldTweaker.I.WorldType.Value;
+			// Force flat.
 			if (flatness == 0)
 			{
 				__result = 0;
 				return;
 			}
+			// Make no alterations for vanilla.
+			else if (flatness == 1)
+				return;
 
 			__result *= flatness;
 		}
