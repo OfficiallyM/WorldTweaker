@@ -12,6 +12,16 @@ namespace WorldTweaker.Harmony
 		}
 	}
 
+	[HarmonyPatch(typeof(undergroundSpawnScript), nameof(undergroundSpawnScript.Spawn))]
+	internal static class Patch_undergroundSpawnScript_Spawn
+	{
+		private static void Prefix(undergroundSpawnScript __instance)
+		{
+			float rate = WorldTweaker.I.ItemSpawnRate.Value;
+			__instance.chance *= rate;
+		}
+	}
+
 	[HarmonyPatch(typeof(tankscript), nameof(tankscript.RandomFluid))]
 	internal static class Patch_tankscript_RandomFluid
 	{
