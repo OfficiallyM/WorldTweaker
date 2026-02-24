@@ -22,6 +22,7 @@ namespace WorldTweaker.Harmony
 			WorldTweaker.I.WorldType.SetValue(worldData?.WorldType ?? 1f);
 			WorldTweaker.I.ItemSpawnRate.SetValue(worldData?.ItemSpawnRate ?? 1f);
 			WorldTweaker.I.FluidAmount.SetValue(worldData?.FluidAmount ?? 1f);
+			WorldTweaker.I.CrateModifier.SetValue(worldData?.CrateModifier ?? 1);
 		}
 	}
 }

@@ -41,6 +41,7 @@ namespace WorldTweaker.Core
 		public float? WorldType { get; set; }
 		public float? ItemSpawnRate { get; set; }
 		public float? FluidAmount { get; set; }
+		public int? CrateModifier { get; set; }
 
 		public WorldData(
 			float? length,
@@ -50,7 +51,8 @@ namespace WorldTweaker.Core
 			float? buildingDensity,
 			float? worldType,
 			float? itemSpawnRate,
-			float? fluidAmount
+			float? fluidAmount,
+			int? crateModifier
 		)
 		{
 			Length = length;
@@ -61,6 +63,7 @@ namespace WorldTweaker.Core
 			WorldType = worldType;
 			ItemSpawnRate = itemSpawnRate;
 			FluidAmount = fluidAmount;
+			CrateModifier = crateModifier;
 		}
 	}
 }

@@ -183,6 +183,18 @@ namespace WorldTweaker
 			6
 		);
 
+		internal IndexSlider<int> CrateModifier = new IndexSlider<int>(
+			"Crate modifier",
+			"Modifies how the contents of crates are handled",
+			new List<OptionSlider<int>>
+			{
+				new OptionSlider<int>(0, "Always empty"),
+				new OptionSlider<int>(1, "Vanilla"),
+				new OptionSlider<int>(2, "Decrease amount, randomise condition"),
+			},
+			1
+		);
+
 		public WorldTweaker()
 		{
 			I = this;
@@ -376,6 +388,7 @@ namespace WorldTweaker
 
 			ItemSpawnRate.Render();
 			FluidAmount.Render();
+			CrateModifier.Render();
 		}
 
 		public void SetStartButtonState(bool state)
@@ -395,7 +408,8 @@ namespace WorldTweaker
 				BuildingDensity.Value,
 				WorldType.Value,
 				ItemSpawnRate.Value,
-				FluidAmount.Value
+				FluidAmount.Value,
+				CrateModifier.Value
 			));
 		}
 	}
