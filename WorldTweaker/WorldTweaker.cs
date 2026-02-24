@@ -1,8 +1,12 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using TLDLoader;
 using UnityEngine;
 using WorldTweaker.Core;
+using WorldTweaker.Harmony;
 using WorldTweaker.UI;
 using WorldTweaker.Utilities;
 using WorldTweaker.Utilities.UI;
@@ -35,6 +39,7 @@ namespace WorldTweaker
 		internal bool InterceptStart = true;
 		internal bool ShowUI = false;
 
+		private bool _firstRun = true;
 		private string[] _tabs = { "World", "Road", "Items" };
 		private int _activeTab = 0;
 		private int[] _gameTabs = { 2 };
@@ -185,14 +190,7 @@ namespace WorldTweaker
 
 		public override void OnMenuLoad()
 		{
-			foreach (var mod in ModLoader.LoadedMods)
-			{
-				if (mod.ID == "M_Achievements")
-				{
-					_hasAchievementsMod = true;
-					break;
-				}
-			}
+			_hasAchievementsMod = ModLoaderUtilities.DoesModExist("M_Achievements");
 		}
 
 		public override void OnLoad()
@@ -205,6 +203,35 @@ namespace WorldTweaker
 
 		public override void Update()
 		{
+			if (_firstRun)
+			{
+				HarmonyLib.Harmony harmonyInstance = new HarmonyLib.Harmony($"com.{ID.ToLower()}.2");
+				if (ModLoaderUtilities.DoesModExist("SgtJoeBuildings"))
+				{
+					var buildingsMod = AppDomain.CurrentDomain.GetAssemblies()
+						.FirstOrDefault(a => a.GetName().Name == "SgtJoeBuildings");
+
+					if (buildingsMod != null)
+					{
+						var type = buildingsMod.GetType("SgtJoeBuildings.SgtJoeBuildingBase");
+
+						// Get the display class type too for the signature
+						var displayClassType = type.GetNestedType("<>c__DisplayClass32_0", BindingFlags.NonPublic);
+
+						var method = type.GetMethod(
+							"ParseItemFromSpawnString123123123123123", // replace with real name
+							BindingFlags.NonPublic | BindingFlags.Static,   // note: static, not instance
+							null,
+							new Type[] { typeof(string), typeof(string).MakeByRefType(), typeof(int).MakeByRefType(), displayClassType.MakeByRefType() },
+							null
+						);
+
+						harmonyInstance.Patch(method, postfix: new HarmonyMethod(typeof(Patch_SgtJoeBuildingBase_ParseItemFromSpawnString), nameof(Patch_SgtJoeBuildingBase_ParseItemFromSpawnString.Postfix)));
+					}
+				}
+				_firstRun = false;
+			}
+
 			Save.ExecuteQueue();
 
 			// Reset UI intercept here because OnMenuLoad() is only called once.
