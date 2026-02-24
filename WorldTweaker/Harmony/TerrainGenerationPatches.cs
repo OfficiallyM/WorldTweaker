@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using UnityEngine;
+using WorldTweaker.Utilities;
 
 namespace WorldTweaker.Harmony
 {
@@ -22,6 +23,71 @@ namespace WorldTweaker.Harmony
 				return;
 
 			__result *= flatness;
+		}
+	}
+
+	[HarmonyPatch(typeof(TerrainGenerator), nameof(TerrainGenerator.PlaceTerrain))]
+	public static class Patch_TerrainGenerator_PlaceTerrain
+	{
+		public static void Postfix(TerrainGenerator __instance)
+		{
+			if (WorldTweaker.I.WorldType.Value != 0) return;
+
+			var terrain = Traverse.Create(__instance).Field("currentPlacedTerrain").GetValue<terrainscript>();
+			if (terrain == null) return;
+
+			var mesh = terrain.meshfilter.mesh;
+			var verts = mesh.vertices;
+			for (int i = 0; i < verts.Length; i++)
+				verts[i].y = 0f;
+			mesh.vertices = verts;
+			mesh.RecalculateBounds();
+			mesh.RecalculateNormals();
+			terrain.meshcollider.sharedMesh = mesh;
+		}
+	}
+
+	[HarmonyPatch(typeof(TerrainGenerator), nameof(TerrainGenerator.PlaceDistantTerrain))]
+	public static class Patch_TerrainGenerator_PlaceDistantTerrain
+	{
+		public static void Postfix(TerrainGenerator __instance)
+		{
+			if (WorldTweaker.I.WorldType.Value != 0) return;
+
+			var terrain = Traverse.Create(__instance).Field("currentPlacedDistantTerrain").GetValue<terrainscript>();
+			if (terrain == null) return;
+
+			var mesh = terrain.meshfilter.mesh;
+			var verts = mesh.vertices;
+			for (int i = 0; i < verts.Length; i++)
+				verts[i].y = 0f;
+			mesh.vertices = verts;
+			mesh.RecalculateBounds();
+			mesh.RecalculateNormals();
+			if (terrain.meshcollider != null)
+				terrain.meshcollider.sharedMesh = mesh;
+		}
+	}
+
+	[HarmonyPatch(typeof(TerrainGenerator), nameof(TerrainGenerator.PlaceDistantTerrain2))]
+	public static class Patch_TerrainGenerator_PlaceDistantTerrain2
+	{
+		public static void Postfix(TerrainGenerator __instance)
+		{
+			if (WorldTweaker.I.WorldType.Value != 0) return;
+
+			var terrain = Traverse.Create(__instance).Field("currentPlacedDistantTerrain2").GetValue<terrainscript>();
+			if (terrain == null) return;
+
+			var mesh = terrain.meshfilter.mesh;
+			var verts = mesh.vertices;
+			for (int i = 0; i < verts.Length; i++)
+				verts[i].y = 0f;
+			mesh.vertices = verts;
+			mesh.RecalculateBounds();
+			mesh.RecalculateNormals();
+			if (terrain.meshcollider != null)
+				terrain.meshcollider.sharedMesh = mesh;
 		}
 	}
 }

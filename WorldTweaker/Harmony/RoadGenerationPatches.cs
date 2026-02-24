@@ -14,6 +14,11 @@ namespace WorldTweaker.Harmony
 			float newLength = WorldTweaker.I.RoadLength.Value;
 			__instance.scale = __instance.scale * (__instance.length / newLength);
 			__instance.length = newLength;
+
+			float flatness = WorldTweaker.I.WorldType.Value;
+			if (flatness != 0) return;
+			__instance.doublePos = new doublecoord() { x = 0, y = 0.1, z = 0};
+			__instance.roadAboveTerrain = 0.1f;
 		}
 	}
 
