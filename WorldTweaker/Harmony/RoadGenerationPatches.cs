@@ -15,10 +15,18 @@ namespace WorldTweaker.Harmony
 			__instance.scale = __instance.scale * (__instance.length / newLength);
 			__instance.length = newLength;
 
+			// Ensure road aligns correctly on flat world type.
 			float flatness = WorldTweaker.I.WorldType.Value;
-			if (flatness != 0) return;
-			__instance.doublePos = new doublecoord() { x = 0, y = 0.1, z = 0};
-			__instance.roadAboveTerrain = 0.1f;
+			if (flatness == 0)
+			{
+				__instance.doublePos = new doublecoord() { x = 0, y = 0.1, z = 0};
+				__instance.roadAboveTerrain = 0.1f;
+			}
+
+			// Move road closer to starter house on road bridge world type.
+			// This ensures you can actually leave the starter house.
+			if (flatness > 1)
+				__instance.doublePos = new doublecoord() { x = 20, y = 0, z = 0 };
 		}
 	}
 
