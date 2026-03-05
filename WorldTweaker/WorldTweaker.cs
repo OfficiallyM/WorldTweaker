@@ -19,7 +19,7 @@ namespace WorldTweaker
 		public override string ID => "M_WorldTweaker";
 		public override string Name => "World Tweaker";
 		public override string Author => "M-";
-		public override string Version => "1.1.0";
+		public override string Version => "1.1.1";
 		public override bool LoadInMenu => true;
 		public override bool UseLogger => true;
 		public override bool UseHarmony => true;
@@ -137,7 +137,7 @@ namespace WorldTweaker
 				new OptionSlider<float>(0f, "Flat"),
 				new OptionSlider<float>(1f, "Vanilla"),
 				new OptionSlider<float>(0.85f, "Canyon"),
-				new OptionSlider<float>(1.1f, "Road bridge"),
+				new OptionSlider<float>(2f, "Road bridge"),
 			},
 			1
 		);
