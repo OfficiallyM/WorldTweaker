@@ -14,7 +14,7 @@ namespace WorldTweaker.Components
 				switch (WorldTweaker.I.WorldType.Value)
 				{
 					case 2f:
-						return 399f;
+						return 449f;
 					default:
 						return 0;
 				}

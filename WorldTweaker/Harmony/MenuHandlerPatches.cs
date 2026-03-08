@@ -29,6 +29,12 @@ namespace WorldTweaker.Harmony
 				wt.CrateModifier.SetValue(worldData?.CrateModifier ?? 1);
 			}
 
+			// Force tropical to desert biome.
+			if (wt.WorldType.Value == 2f)
+			{
+				mainscript.M.GSettings.biome = 1;
+			}
+
 			Logging.LogDebug($"RoadLength: {wt.RoadLength}");
 			Logging.LogDebug($"RoadCurvature: {wt.RoadCurvature}");
 			Logging.LogDebug($"ObjectDensity: {wt.ObjectDensity}");
