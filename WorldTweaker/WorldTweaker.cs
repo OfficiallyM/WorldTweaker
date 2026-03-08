@@ -17,7 +17,7 @@ namespace WorldTweaker
 	public class WorldTweaker : Mod
 	{
 		// Mod meta stuff.
-		private string _version = "1.1.2";
+		private string _version = "2.0.0";
 		public override string ID => "M_WorldTweaker";
 		public override string Name => "World Tweaker";
 		public override string Author => "M-";

@@ -58,6 +58,9 @@ namespace WorldTweaker.Harmony
 				var roadData = __instance.roads[pi];
 				if (road == null || roadData == null) return;
 
+				if (road.doublePos.y > WorldTweaker.Water.WaterHeight + 1)
+					return;
+
 				var align = road.gameObject.AddComponent<terrainHeightAlignToBuildingScript>();
 				var transforms = new Transform[roadData.coords.Length];
 				align.range2 = new float[roadData.coords.Length];

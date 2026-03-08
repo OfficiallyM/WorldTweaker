@@ -35,12 +35,25 @@ namespace WorldTweaker.Harmony
 
 			// Tropical.
 			if (flatness == 2f)
-			{
-				__result = Mathf.Clamp(__result, 600f, float.PositiveInfinity);
 				return;
-			}
 
 			__result *= flatness;
+		}
+	}
+
+	[HarmonyPatch(typeof(TerrainGenerator), nameof(TerrainGenerator.GetTerrainHeightWorld),
+	new Type[] { typeof(Vector2), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool) })]
+	public static class GetTerrainHeightWorld_Postfix
+	{
+		public static void Postfix(ref float __result)
+		{
+			float flatness = WorldTweaker.I.WorldType.Value;
+
+			// Tropical.
+			if (flatness == 2f)
+			{
+				__result = Mathf.Clamp(__result, 400f, float.PositiveInfinity);
+			}
 		}
 	}
 
@@ -168,12 +181,12 @@ namespace WorldTweaker.Harmony
 	{
 		private static void Postfix(terrainHeightAlignToBuildingScript __instance)
 		{
-			string name = __instance.name.ToLower();
+			string name = __instance.name.ToLowerInvariant();
 			if (name.Contains("road")) return;
 
-			float multiplier = 4f;
-			if (name.Contains("haz02"))
-				multiplier = 6f;
+			float multiplier = 3f;
+			if (name == "haz02")
+				multiplier = 4f;
 			for (int i = 0; i < __instance.helpPosList.Count; i++)
 			{
 				var helpPos = __instance.helpPosList[i];
