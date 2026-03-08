@@ -109,7 +109,7 @@ namespace WorldTweaker.Harmony
 
 				if (WorldTweaker.Water.DistantWater.ContainsKey(terrain)) return;
 
-				var waterPos = new Vector3(terrain.transform.position.x, (float)mainscript.M.mainWorld.coord.y + 599f, terrain.transform.position.z);
+				var waterPos = new Vector3(terrain.transform.position.x, (float)mainscript.M.mainWorld.coord.y + WorldTweaker.Water.WaterHeight, terrain.transform.position.z);
 				var water = GameObject.Instantiate(WorldTweaker.Prefabs.Water, waterPos, Quaternion.identity);
 				water.transform.SetParent(WorldTweaker.Water.WaterParent);
 				var waterController = water.GetComponent<Water>();
