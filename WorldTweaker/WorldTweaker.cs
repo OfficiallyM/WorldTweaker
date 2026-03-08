@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using TLDLoader;
 using UnityEngine;
+using WorldTweaker.Components;
 using WorldTweaker.Core;
 using WorldTweaker.Harmony;
 using WorldTweaker.UI;
@@ -19,8 +20,10 @@ namespace WorldTweaker
 		public override string ID => "M_WorldTweaker";
 		public override string Name => "World Tweaker";
 		public override string Author => "M-";
-		public override string Version => "1.1.1";
+		public override string Version => "2.0.0";
 		public override bool LoadInMenu => true;
+		public override bool LoadInDB => true;
+		public override bool UseAssetsFolder => true;
 		public override bool UseLogger => true;
 		public override bool UseHarmony => true;
 
@@ -35,6 +38,8 @@ namespace WorldTweaker
 				return menu != null && menu.activeSelf;
 			}
 		}
+		internal static PrefabManager Prefabs;
+		internal static WaterManager Water;
 
 		internal bool InterceptStart = true;
 		internal bool ShowUI = false;
@@ -138,6 +143,7 @@ namespace WorldTweaker
 				new OptionSlider<float>(1f, "Vanilla"),
 				new OptionSlider<float>(0.85f, "Canyon"),
 				new OptionSlider<float>(1.25f, "Road bridge"),
+				new OptionSlider<float>(2f, "Tropical"),
 			},
 			1
 		);
@@ -203,6 +209,17 @@ namespace WorldTweaker
 		public override void OnMenuLoad()
 		{
 			_hasAchievementsMod = ModLoaderUtilities.DoesModExist("M_Achievements");
+
+			// Initialise global helpers.
+			GameObject helper = new GameObject("WorldTweaker");
+			GameObject.DontDestroyOnLoad(helper);
+			Prefabs = helper.AddComponent<PrefabManager>();
+		}
+
+		public override void DbLoad()
+		{
+			Prefabs.CreatePrefabs();
+			Water = mainscript.M.gameObject.AddComponent<WaterManager>();
 		}
 
 		public override void OnLoad()
