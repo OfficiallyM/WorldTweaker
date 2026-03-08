@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using WorldTweaker.Components;
 using WorldTweaker.Utilities;
 
 namespace WorldTweaker.Harmony
@@ -25,7 +27,14 @@ namespace WorldTweaker.Harmony
 			}
 			
 			// Road bridge.
-			if (flatness > 1)
+			if (flatness == 1.25f)
+			{
+				__result = 1000f;
+				return;
+			}
+
+			// Tropical.
+			if (flatness == 2f)
 			{
 				__result = 1000f;
 				return;
@@ -35,24 +44,36 @@ namespace WorldTweaker.Harmony
 		}
 	}
 
+	[HarmonyPatch(typeof(TerrainGenerator), nameof(TerrainGenerator.FStart))]
+	public static class Patch_TerrainGenerator_FStart
+	{
+		public static void Postfix(TerrainGenerator __instance)
+		{
+			WorldTweaker.Water.WaterParent = new GameObject("G_WaterParent").transform;
+			WorldTweaker.Water.WaterParent.position = Vector3.zero;
+		}
+	}
+
 	[HarmonyPatch(typeof(TerrainGenerator), nameof(TerrainGenerator.PlaceTerrain))]
 	public static class Patch_TerrainGenerator_PlaceTerrain
 	{
 		public static void Postfix(TerrainGenerator __instance)
 		{
-			if (WorldTweaker.I.WorldType.Value != 0) return;
+			// Flat world, replace terrain with flat mesh.
+			if (WorldTweaker.I.WorldType.Value == 0)
+			{
+				var terrain = Traverse.Create(__instance).Field("currentPlacedTerrain").GetValue<terrainscript>();
+				if (terrain == null) return;
 
-			var terrain = Traverse.Create(__instance).Field("currentPlacedTerrain").GetValue<terrainscript>();
-			if (terrain == null) return;
-
-			var mesh = terrain.meshfilter.mesh;
-			var verts = mesh.vertices;
-			for (int i = 0; i < verts.Length; i++)
-				verts[i].y = 0f;
-			mesh.vertices = verts;
-			mesh.RecalculateBounds();
-			mesh.RecalculateNormals();
-			terrain.meshcollider.sharedMesh = mesh;
+				var mesh = terrain.meshfilter.mesh;
+				var verts = mesh.vertices;
+				for (int i = 0; i < verts.Length; i++)
+					verts[i].y = 0f;
+				mesh.vertices = verts;
+				mesh.RecalculateBounds();
+				mesh.RecalculateNormals();
+				terrain.meshcollider.sharedMesh = mesh;
+			}
 		}
 	}
 
@@ -61,20 +82,40 @@ namespace WorldTweaker.Harmony
 	{
 		public static void Postfix(TerrainGenerator __instance)
 		{
-			if (WorldTweaker.I.WorldType.Value != 0) return;
+			// Flat world, replace terrain with flat mesh.
+			if (WorldTweaker.I.WorldType.Value == 0)
+			{
+				var terrain = Traverse.Create(__instance).Field("currentPlacedDistantTerrain").GetValue<terrainscript>();
+				if (terrain == null) return;
 
-			var terrain = Traverse.Create(__instance).Field("currentPlacedDistantTerrain").GetValue<terrainscript>();
-			if (terrain == null) return;
+				var mesh = terrain.meshfilter.mesh;
+				var verts = mesh.vertices;
+				for (int i = 0; i < verts.Length; i++)
+					verts[i].y = 0f;
+				mesh.vertices = verts;
+				mesh.RecalculateBounds();
+				mesh.RecalculateNormals();
+				if (terrain.meshcollider != null)
+					terrain.meshcollider.sharedMesh = mesh;
+			}
 
-			var mesh = terrain.meshfilter.mesh;
-			var verts = mesh.vertices;
-			for (int i = 0; i < verts.Length; i++)
-				verts[i].y = 0f;
-			mesh.vertices = verts;
-			mesh.RecalculateBounds();
-			mesh.RecalculateNormals();
-			if (terrain.meshcollider != null)
-				terrain.meshcollider.sharedMesh = mesh;
+			// Tropical, place water.
+			// Deliberately not using close terrain for better coverage
+			// and to avoid overlap.
+			if (WorldTweaker.I.WorldType.Value == 2f)
+			{
+				var terrain = Traverse.Create(__instance).Field("currentPlacedDistantTerrain").GetValue<terrainscript>();
+				if (terrain == null) return;
+
+				if (WorldTweaker.Water.DistantWater.ContainsKey(terrain)) return;
+
+				var waterPos = new Vector3(terrain.transform.position.x, (float)mainscript.M.mainWorld.coord.y + 999f, terrain.transform.position.z);
+				var water = GameObject.Instantiate(WorldTweaker.Prefabs.Water, waterPos, Quaternion.identity);
+				water.transform.SetParent(WorldTweaker.Water.WaterParent);
+				var waterController = water.GetComponent<Water>();
+				waterController.SetScale((TerrainGenerationSettings.staticReference.defDistantTerrainSize / 2f) - 278f);
+				WorldTweaker.Water.DistantWater.Add(terrain, waterController);
+			}
 		}
 	}
 
@@ -83,20 +124,58 @@ namespace WorldTweaker.Harmony
 	{
 		public static void Postfix(TerrainGenerator __instance)
 		{
-			if (WorldTweaker.I.WorldType.Value != 0) return;
+			// Flat world, replace terrain with flat mesh.
+			if (WorldTweaker.I.WorldType.Value != 0)
+			{ 
+				var terrain = Traverse.Create(__instance).Field("currentPlacedDistantTerrain2").GetValue<terrainscript>();
+				if (terrain == null) return;
 
-			var terrain = Traverse.Create(__instance).Field("currentPlacedDistantTerrain2").GetValue<terrainscript>();
-			if (terrain == null) return;
+				var mesh = terrain.meshfilter.mesh;
+				var verts = mesh.vertices;
+				for (int i = 0; i < verts.Length; i++)
+					verts[i].y = 0f;
+				mesh.vertices = verts;
+				mesh.RecalculateBounds();
+				mesh.RecalculateNormals();
+				if (terrain.meshcollider != null)
+					terrain.meshcollider.sharedMesh = mesh;
+			}
+		}
+	}
 
-			var mesh = terrain.meshfilter.mesh;
-			var verts = mesh.vertices;
-			for (int i = 0; i < verts.Length; i++)
-				verts[i].y = 0f;
-			mesh.vertices = verts;
-			mesh.RecalculateBounds();
-			mesh.RecalculateNormals();
-			if (terrain.meshcollider != null)
-				terrain.meshcollider.sharedMesh = mesh;
+	[HarmonyPatch(typeof(TerrainManager), "RemoveDistantTerrains")]
+	public static class Patch_TerrainManager_RemoveDistantTerrains
+	{
+		public static void Postfix(TerrainManager __instance)
+		{
+			var removeQueue = new List<terrainscript>();
+			foreach (var water in WorldTweaker.Water.DistantWater)
+			{
+				if (water.Key == null || !__instance.generator.allterrainsDistant.Contains(water.Key))
+					removeQueue.Add(water.Key);
+			}
+
+			foreach (var terrain in removeQueue)
+			{
+				GameObject.Destroy(WorldTweaker.Water.DistantWater[terrain].gameObject);
+				WorldTweaker.Water.DistantWater.Remove(terrain);
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(terrainHeightAlignToBuildingScript), nameof(terrainHeightAlignToBuildingScript.FStart))]
+	internal static class Patch_terrainHeightAlignToBuildingScript_FStart
+	{
+		private static void Postfix(terrainHeightAlignToBuildingScript __instance)
+		{
+			float multiplier = 2f;
+			if (__instance.name.ToLower().Contains("haz02"))
+				multiplier = 4f;
+			for (int i = 0; i < __instance.helpPosList.Count; i++)
+			{
+				var helpPos = __instance.helpPosList[i];
+				helpPos.range = new Vector2(helpPos.range.x * multiplier, helpPos.range.y * multiplier);
+			}
 		}
 	}
 }

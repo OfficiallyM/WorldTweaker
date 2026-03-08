@@ -30,12 +30,12 @@ namespace WorldTweaker.Harmony
 		}
 	}
 
-#if DEBUG
 	[HarmonyPatch(typeof(roadGenScript), nameof(roadGenScript.PlaceOneRoad))]
 	internal static class Patch_RoadGenScript_PlaceOneRoad
 	{
 		private static void Postfix(roadGenScript __instance, int pi)
 		{
+#if DEBUG
 			if (pi == __instance.roadNum - 1)
 			{
 				// Don't spawn mom's house on really short roads.
@@ -50,9 +50,35 @@ namespace WorldTweaker.Harmony
 				// Not happy with rotation but it'll do.
 				GameObject.Instantiate(itemdatabase.d.gkezdolevel, pos + Vector3.up * 1f + Vector3.back * 3f, Quaternion.Euler(-70, 0, 90f));
 			}
+#endif
+
+			if (WorldTweaker.I.WorldType.Value == 2f)
+			{
+				var road = __instance.roadList[pi];
+				var roadData = __instance.roads[pi];
+				if (road == null || roadData == null) return;
+
+				var align = road.gameObject.AddComponent<terrainHeightAlignToBuildingScript>();
+				var transforms = new Transform[roadData.coords.Length];
+				align.range2 = new float[roadData.coords.Length];
+
+				for (int i = 0; i < roadData.coords.Length; i++)
+				{
+					var helper = new GameObject("RoadAlignHelper");
+					helper.transform.position = new Vector3(
+						(float)(__instance.roads[pi].posX + __instance.world2.coord.x) + roadData.coords[i].x,
+						(float)(__instance.roads[pi].posY + __instance.world2.coord.y) + roadData.coords[i].y,
+						(float)(__instance.roads[pi].posZ + __instance.world2.coord.z) + roadData.coords[i].z);
+					helper.transform.localScale = Vector3.one * 5f;
+					transforms[i] = helper.transform;
+					align.range2[i] = 6.5f;
+				}
+
+				align.helpPosCoords = transforms;
+				align.FStart();
+			}
 		}
 	}
-#endif
 
 	[HarmonyPatch(typeof(roadGenScript), nameof(roadGenScript.OneValue), new Type[] { typeof(float) })]
 	internal static class Patch_RoadGenScript_OneValue
