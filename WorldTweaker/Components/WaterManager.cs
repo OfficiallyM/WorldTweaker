@@ -7,5 +7,18 @@ namespace WorldTweaker.Components
 	{
 		public Transform WaterParent;
 		public Dictionary<terrainscript, Water> DistantWater = new Dictionary<terrainscript, Water>();
+		public float WaterHeight
+		{
+			get
+			{
+				switch (WorldTweaker.I.WorldType.Value)
+				{
+					case 2f:
+						return 499f;
+					default:
+						return 0;
+				}
+			}
+		}
 	}
 }
