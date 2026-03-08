@@ -49,5 +49,10 @@ namespace WorldTweaker.UI
 				}
 			}
 		}
+
+		public override string ToString()
+		{
+			return $"{Value} ({Options[SelectedIndex].Label})";
+		}
 	}
 }

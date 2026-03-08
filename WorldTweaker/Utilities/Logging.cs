@@ -7,9 +7,8 @@
 
 		public static void LogDebug(string message)
 		{
-#if DEBUG
+			if (!WorldTweaker.Debug) return;
 			WorldTweaker.I.Logger.LogDebug(message);
-#endif
 		}
 
 		public static void LogInfo(string message) =>

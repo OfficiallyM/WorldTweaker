@@ -154,6 +154,11 @@ namespace WorldTweaker.Utilities
 		}
 
 		/// <summary>
+		/// Clear the current save data cache.
+		/// </summary>
+		internal static void InvalidateCache() => _data = null;
+
+		/// <summary>
 		/// Trigger save data queue execution.
 		/// </summary>
 		internal static void ExecuteQueue()

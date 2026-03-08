@@ -9,20 +9,35 @@ namespace WorldTweaker.Harmony
 	{
 		private static void Postfix(menuhandler __instance)
 		{
-			// Don't try loading save data for new games.
-			if (!__instance.DFMS.load) return;
+			var wt = WorldTweaker.I;
+			if (mainscript.M.load || (mainscript.M.DFMS?.load ?? false))
+			{
+				// Load save data.
+				WorldData worldData = Save.GetWorldData();
 
-			WorldData worldData = Save.GetWorldData();
+				Logging.LogDebug("Loading from save data");
+				Logging.LogDebug($"Save data: {(worldData?.ToString() ?? "null")}");
 
-			WorldTweaker.I.RoadLength.SetValue(worldData?.Length ?? 5000000);
-			WorldTweaker.I.RoadCurvature.SetValue(worldData?.RoadCurvature ?? 1f);
-			WorldTweaker.I.ObjectDensity.SetValue(worldData?.ObjectDensity ?? 1f);
-			WorldTweaker.I.MountainDensity.SetValue(worldData?.MountainDensity ?? 1f);
-			WorldTweaker.I.BuildingDensity.SetValue(worldData?.BuildingDensity ?? 1f);
-			WorldTweaker.I.WorldType.SetValue(worldData?.WorldType ?? 1f);
-			WorldTweaker.I.ItemSpawnRate.SetValue(worldData?.ItemSpawnRate ?? 1f);
-			WorldTweaker.I.FluidAmount.SetValue(worldData?.FluidAmount ?? 1f);
-			WorldTweaker.I.CrateModifier.SetValue(worldData?.CrateModifier ?? 1);
+				wt.RoadLength.SetValue(worldData?.Length ?? 5000000);
+				wt.RoadCurvature.SetValue(worldData?.RoadCurvature ?? 1f);
+				wt.ObjectDensity.SetValue(worldData?.ObjectDensity ?? 1f);
+				wt.MountainDensity.SetValue(worldData?.MountainDensity ?? 1f);
+				wt.BuildingDensity.SetValue(worldData?.BuildingDensity ?? 1f);
+				wt.WorldType.SetValue(worldData?.WorldType ?? 1f);
+				wt.ItemSpawnRate.SetValue(worldData?.ItemSpawnRate ?? 1f);
+				wt.FluidAmount.SetValue(worldData?.FluidAmount ?? 1f);
+				wt.CrateModifier.SetValue(worldData?.CrateModifier ?? 1);
+			}
+
+			Logging.LogDebug($"RoadLength: {wt.RoadLength}");
+			Logging.LogDebug($"RoadCurvature: {wt.RoadCurvature}");
+			Logging.LogDebug($"ObjectDensity: {wt.ObjectDensity}");
+			Logging.LogDebug($"MountainDensity: {wt.MountainDensity}");
+			Logging.LogDebug($"BuildingDensity: {wt.BuildingDensity}");
+			Logging.LogDebug($"WorldType: {wt.WorldType}");
+			Logging.LogDebug($"ItemSpawnRate: {wt.ItemSpawnRate}");
+			Logging.LogDebug($"FluidAmount: {wt.FluidAmount}");
+			Logging.LogDebug($"CrateModifier: {wt.CrateModifier}");
 		}
 	}
 }

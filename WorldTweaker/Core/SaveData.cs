@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace WorldTweaker.Core
 {
@@ -64,6 +65,22 @@ namespace WorldTweaker.Core
 			ItemSpawnRate = itemSpawnRate;
 			FluidAmount = fluidAmount;
 			CrateModifier = crateModifier;
+		}
+
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.Append($"\nLength: {Length}");
+			sb.Append($"\nRoadCurvature: {RoadCurvature}");
+			sb.Append($"\nObjectDensity: {ObjectDensity}");
+			sb.Append($"\nMountainDensity: {MountainDensity}");
+			sb.Append($"\nBuildingDensity: {BuildingDensity}");
+			sb.Append($"\nWorldType: {WorldType}");
+			sb.Append($"\nItemSpawnRate: {ItemSpawnRate}");
+			sb.Append($"\nFluidAmount: {FluidAmount}");
+			sb.Append($"\nFluidAmount: {FluidAmount}");
+			sb.Append($"\nCrateModifier: {CrateModifier}");
+			return sb.ToString();
 		}
 	}
 }

@@ -16,11 +16,13 @@ namespace WorldTweaker
 	public class WorldTweaker : Mod
 	{
 		// Mod meta stuff.
+		private string _version = "1.1.2";
 		public override string ID => "M_WorldTweaker";
 		public override string Name => "World Tweaker";
 		public override string Author => "M-";
-		public override string Version => "1.1.1";
+		public override string Version => _version;
 		public override bool LoadInMenu => true;
+		public override bool LoadInDB => true;
 		public override bool UseLogger => true;
 		public override bool UseHarmony => true;
 
@@ -35,6 +37,7 @@ namespace WorldTweaker
 				return menu != null && menu.activeSelf;
 			}
 		}
+		internal static bool Debug = false;
 
 		internal bool InterceptStart = true;
 		internal bool ShowUI = false;
@@ -198,6 +201,11 @@ namespace WorldTweaker
 		public WorldTweaker()
 		{
 			I = this;
+
+#if DEBUG
+			_version += "-DEV";
+			Debug = true;
+#endif
 		}
 
 		public override void OnMenuLoad()
@@ -205,10 +213,16 @@ namespace WorldTweaker
 			_hasAchievementsMod = ModLoaderUtilities.DoesModExist("M_Achievements");
 		}
 
+		public override void DbLoad()
+		{
+			Save.InvalidateCache();
+		}
+
 		public override void OnLoad()
 		{
 			// Don't save data for loaded saves.
-			if (mainscript.M.load) return;
+			if (mainscript.M.load || (mainscript.M.DFMS?.load ?? false))
+				return;
 
 			UpdateSaveData();
 		}
