@@ -33,6 +33,7 @@ namespace WorldTweaker.Core
 
 	internal class WorldData : Savable
 	{
+		public string Version { get; set; }
 		public float? Length { get; set; }
 		public float? RoadCurvature { get; set; }
 		public float? ObjectDensity { get; set; }
@@ -55,6 +56,7 @@ namespace WorldTweaker.Core
 			int? crateModifier
 		)
 		{
+			Version = WorldTweaker.I.Version;
 			Length = length;
 			RoadCurvature = roadCurvature;
 			ObjectDensity = objectDensity;
