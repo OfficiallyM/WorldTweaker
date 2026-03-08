@@ -36,7 +36,7 @@ namespace WorldTweaker.Harmony
 			// Tropical.
 			if (flatness == 2f)
 			{
-				__result = 1000f;
+				__result = Mathf.Clamp(__result, 600f, float.PositiveInfinity);
 				return;
 			}
 
@@ -109,7 +109,7 @@ namespace WorldTweaker.Harmony
 
 				if (WorldTweaker.Water.DistantWater.ContainsKey(terrain)) return;
 
-				var waterPos = new Vector3(terrain.transform.position.x, (float)mainscript.M.mainWorld.coord.y + 999f, terrain.transform.position.z);
+				var waterPos = new Vector3(terrain.transform.position.x, (float)mainscript.M.mainWorld.coord.y + 599f, terrain.transform.position.z);
 				var water = GameObject.Instantiate(WorldTweaker.Prefabs.Water, waterPos, Quaternion.identity);
 				water.transform.SetParent(WorldTweaker.Water.WaterParent);
 				var waterController = water.GetComponent<Water>();
@@ -168,9 +168,12 @@ namespace WorldTweaker.Harmony
 	{
 		private static void Postfix(terrainHeightAlignToBuildingScript __instance)
 		{
-			float multiplier = 2f;
-			if (__instance.name.ToLower().Contains("haz02"))
-				multiplier = 4f;
+			string name = __instance.name.ToLower();
+			if (name.Contains("road")) return;
+
+			float multiplier = 4f;
+			if (name.Contains("haz02"))
+				multiplier = 6f;
 			for (int i = 0; i < __instance.helpPosList.Count; i++)
 			{
 				var helpPos = __instance.helpPosList[i];

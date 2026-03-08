@@ -69,9 +69,9 @@ namespace WorldTweaker.Harmony
 						(float)(__instance.roads[pi].posX + __instance.world2.coord.x) + roadData.coords[i].x,
 						(float)(__instance.roads[pi].posY + __instance.world2.coord.y) + roadData.coords[i].y,
 						(float)(__instance.roads[pi].posZ + __instance.world2.coord.z) + roadData.coords[i].z);
-					helper.transform.localScale = Vector3.one * 5f;
+					helper.transform.localScale = Vector3.one * 10f;
 					transforms[i] = helper.transform;
-					align.range2[i] = 6.5f;
+					align.range2[i] = 8f;
 				}
 
 				align.helpPosCoords = transforms;
