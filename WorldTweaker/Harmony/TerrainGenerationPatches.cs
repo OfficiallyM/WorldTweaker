@@ -52,7 +52,7 @@ namespace WorldTweaker.Harmony
 			// Tropical.
 			if (flatness == 2f)
 			{
-				__result = Mathf.Clamp(__result, 400f, float.PositiveInfinity);
+				__result = Mathf.Clamp(__result, WorldTweaker.Water.WaterHeight + 1f, float.PositiveInfinity);
 			}
 		}
 	}
