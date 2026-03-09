@@ -28,18 +28,27 @@ namespace WorldTweaker.Components
 
 		public void OnTriggerEnter(Collider collider)
 		{
-			if (collider.attachedRigidbody == null) return;
+			if (collider.attachedRigidbody == null)
+				return;
 			var rb = collider.attachedRigidbody;
-			if (!_originalDrag.ContainsKey(rb))
-				_originalDrag[rb] = (rb.drag, rb.angularDrag);
+			if (_originalDrag.ContainsKey(rb))
+				return;
+
+			if (rb == mainscript.M.player.RB)
+				Logging.LogDebug($"Stored drag: {rb.drag}, angular drag: {rb.angularDrag}");
+
+			_originalDrag[rb] = (rb.drag, rb.angularDrag);
 		}
 
 		public void OnTriggerExit(Collider collider)
 		{
-			if (collider.attachedRigidbody == null) return;
+			if (collider.attachedRigidbody == null)
+				return;
 			var rb = collider.attachedRigidbody;
 			if (_originalDrag.TryGetValue(rb, out var original))
 			{
+				if (rb == mainscript.M.player.RB)
+					Logging.LogDebug($"Restored drag: {original.drag}, angular drag: {original.angularDrag}");
 				rb.drag = original.drag;
 				rb.angularDrag = original.angularDrag;
 				_originalDrag.Remove(rb);
@@ -48,10 +57,21 @@ namespace WorldTweaker.Components
 
 		public void OnTriggerStay(Collider collider)
 		{
-			if (collider.attachedRigidbody == null) return;
+			if (collider.attachedRigidbody == null)
+				return;
 
 			var rb = collider.attachedRigidbody;
 			float depth = Mathf.Max(0f, transform.position.y - collider.transform.position.y);
+
+			UpdateDrag(rb, depth);
+		}
+
+		private void UpdateDrag(Rigidbody rb, float depth)
+		{
+			// Return early if the original drag values aren't cached
+			// to prevent the water values from caching.
+			if (!_originalDrag.ContainsKey(rb))
+				return;
 
 			if (mainscript.M.player.RB == rb)
 			{
