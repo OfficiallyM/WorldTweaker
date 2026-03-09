@@ -35,6 +35,8 @@ namespace WorldTweaker.UI
 				GUILayout.Label(Description, "LabelCenter");
 			SelectedIndex = Mathf.RoundToInt(GUILayout.HorizontalSlider(SelectedIndex, 0, Options.Count - 1));
 			GUILayout.Label(Options[SelectedIndex].Label, "LabelCenter");
+			if (!string.IsNullOrEmpty(Options[SelectedIndex].Description))
+				GUILayout.Label(Options[SelectedIndex].Description, "LabelCenter");
 			GUILayout.Space(10);
 		}
 

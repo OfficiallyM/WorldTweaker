@@ -145,7 +145,9 @@ namespace WorldTweaker
 				new OptionSlider<float>(1f, "Vanilla"),
 				new OptionSlider<float>(0.85f, "Canyon"),
 				new OptionSlider<float>(1.25f, "Road bridge"),
-				new OptionSlider<float>(2f, "Tropical"),
+				new OptionSlider<float>(2f, "Tropical",
+					"Inspired by RUNDEN's tropical mod for the 2019 winter update"
+				),
 			},
 			1
 		);
