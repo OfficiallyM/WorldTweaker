@@ -13,22 +13,32 @@ namespace WorldTweaker.Components
 		{
 			get
 			{
-				return _playerDepth >= 0.4f;
+				return _playerDepth > 0.4f;
 			}
 		}
 
+		public static bool IsPlayerDrowning
+		{
+			get
+			{
+				return _playerDepth > 0.7f;
+			}
+		}
+
+		private const float DrownRecoveryDelay = 3f;
+
 		private static Slider _drown;
 		private static float _playerDepth;
+		private static float _drownRecoveryTime = -1f;
 
 		private Dictionary<Rigidbody, (float drag, float angularDrag, float jumpForce)> _originalValues = new Dictionary<Rigidbody, (float, float, float)>();
 
 		public void OnGUI()
 		{
+			if (WorldTweaker.Debug) return;
 			var rb = mainscript.M.player?.RB;
 			GUI.Button(new Rect(0, 0, 300, 30), $"Depth: {_playerDepth}");
 			GUI.Button(new Rect(0, 35, 300, 30), $"Swimming: {IsPlayerSwimming}");
-			GUI.Button(new Rect(0, 70, 300, 30), $"Velocity Y: {rb?.velocity.y:F3}");
-			GUI.Button(new Rect(0, 105, 300, 30), $"Drag : {rb?.drag:F3}");
 		}
 
 		public void LateUpdate()
@@ -46,12 +56,26 @@ namespace WorldTweaker.Components
 				player.RB.useGravity = false;
 
 			// Reduce drown meter when out of water.
-			if (_drown != null && !IsPlayerSwimming)
+			if (_drown != null)
 			{
-				_drown.value -= 0.004f * Time.deltaTime;
+				if (IsPlayerDrowning)
+				{
+					// Reset while still drowning.
+					_drownRecoveryTime = -1f;
+				}
+				else
+				{
+					if (_drownRecoveryTime < 0f)
+						_drownRecoveryTime = Time.time + DrownRecoveryDelay;
 
-				if (_drown.value <= 0f)
-					_drown.gameObject.SetActive(false);
+					if (Time.time >= _drownRecoveryTime)
+					{
+						_drown.value -= 0.004f * Time.deltaTime;
+
+						if (_drown.value <= 0f)
+							_drown.gameObject.SetActive(false);
+					}
+				}
 			}
 		}
 
@@ -165,7 +189,7 @@ namespace WorldTweaker.Components
 				}
 			}
 
-			if (depth > 1.5f)
+			if (IsPlayerDrowning)
 			{
 				_drown = mainscript.M.menu.TTankCap.transform.GetComponentInChildren<Slider>();
 				if (_drown == null)
@@ -182,7 +206,7 @@ namespace WorldTweaker.Components
 				else
 				{
 					_drown.gameObject.SetActive(true);
-					_drown.value += 0.0015f * Time.deltaTime;
+					_drown.value += 0.0015f * Time.fixedDeltaTime;
 					mainscript.M.player.deathSens = 0.5f;
 
 					Image slide = _drown.transform.Find("Fill Area").GetComponentInChildren<Image>();
