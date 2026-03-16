@@ -135,6 +135,7 @@ namespace WorldTweaker.Components
 			UpdateDrag(rb, depth);
 			UpdatePlayer(rb, depth);
 			UpdateTanks(rb, depth);
+			UpdateHydrolock(rb, depth);
 		}
 
 		/// <summary>
@@ -250,18 +251,30 @@ namespace WorldTweaker.Components
 		{
 			float fillRate = 0.5f * depth * Time.fixedDeltaTime;
 
-			foreach (var tank in rb.transform.root.GetComponentsInChildren<tankscript>())
+			var tanks = rb?.transform?.root?.GetComponentsInChildren<tankscript>();
+			if (tanks == null)
+				return;
+
+			foreach (var tank in tanks)
 			{
-				if (tank.F.GetAmount() >= tank.F.maxC) 
+				if (tank.F == null || tank.F.GetAmount() >= tank.F.maxC) 
 					continue;
 
 				bool open = false;
-				foreach (var cap in tank.TC)
+				if (tank.TC == null)
 				{
-					if (cap.valve > 0 && cap.TCap.position.y < transform.position.y)
+					open = true;
+				}
+				else
+				{
+					foreach (var cap in tank.TC)
 					{
-						open = true;
-						break;
+						Vector3 pos = cap.TCap != null ? cap.TCap.position : cap.transform.position;
+						if (cap.valve > 0 && pos.y < transform.position.y)
+						{
+							open = true;
+							break;
+						}
 					}
 				}
 
@@ -270,6 +283,27 @@ namespace WorldTweaker.Components
 
 				tank.F.ChangeOne(fillRate, mainscript.fluidenum.water);
 			}
+		}
+
+		/// <summary>
+		/// Hydrolock submerged engines.
+		/// </summary>
+		/// <param name="rb">Rigidbody in water</param>
+		/// <param name="depth">Current water depth</param>
+		private void UpdateHydrolock(Rigidbody rb, float depth)
+		{
+			var car = rb.transform.root.GetComponentInChildren<carscript>();
+			var engine = car?.Engine;
+			// Return early if car, engine or car electronics are null.
+			if (engine == null || car.electronics == null)
+				return;
+
+			// Return early if engine is out of the water.
+			if (engine.transform.position.y > transform.position.y)
+				return;
+
+			// Jam electronics when in water, stopping engine and any electricals.
+			car.electronics.jamValue = float.MaxValue;
 		}
 	}
 }
