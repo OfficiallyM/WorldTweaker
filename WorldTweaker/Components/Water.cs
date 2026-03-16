@@ -45,6 +45,12 @@ namespace WorldTweaker.Components
 			GUI.Button(new Rect(0, 35, 300, 30), $"Swimming: {IsPlayerSwimming}");
 		}
 
+		public void Start()
+		{
+			// Set to water layer.
+			gameObject.layer = 4;
+		}
+
 		public void LateUpdate()
 		{
 			material.mainTextureOffset += new Vector2(
