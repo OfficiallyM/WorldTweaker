@@ -94,12 +94,6 @@ namespace WorldTweaker.Components
 				return;
 			var player = mainscript.M.player;
 			_originalValues[rb] = (rb.drag, rb.angularDrag, player.RB == rb ? player.FjumpForce : 0);
-
-			if (player.RB == rb)
-			{
-				// Prevent the player from jumping when in water.
-				player.FjumpForce = 0f;
-			}
 		}
 
 		public void OnTriggerExit(Collider collider)
@@ -173,6 +167,15 @@ namespace WorldTweaker.Components
 						Mathf.Lerp(rb.velocity.y, 0f, Time.fixedDeltaTime * 5f),
 						rb.velocity.z
 					);
+
+				// Zero out jump force so the vanilla jump doesn't interfere.
+				if (_originalValues.ContainsKey(rb))
+					player.FjumpForce = 0f;
+			}
+			else if (_originalValues.TryGetValue(rb, out var original))
+			{
+				// Restore jump force when wading but not swimming.
+				player.FjumpForce = original.jumpForce;
 			}
 
 			if (player.Car == null)
