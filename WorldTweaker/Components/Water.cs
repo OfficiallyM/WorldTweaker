@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 using WorldTweaker.Utilities;
 
@@ -30,6 +31,7 @@ namespace WorldTweaker.Components
 		private static Slider _drown;
 		private static float _playerDepth;
 		private static float _drownRecoveryTime = -1f;
+		private static PostProcessVolume _underwaterVolume;
 
 		private Dictionary<Rigidbody, (
 			float drag,
@@ -39,7 +41,7 @@ namespace WorldTweaker.Components
 
 		public void OnGUI()
 		{
-			if (WorldTweaker.Debug) return;
+			if (!WorldTweaker.Debug) return;
 			var rb = mainscript.M.player?.RB;
 			GUI.Button(new Rect(0, 0, 300, 30), $"Depth: {_playerDepth}");
 			GUI.Button(new Rect(0, 35, 300, 30), $"Swimming: {IsPlayerSwimming}");
@@ -49,6 +51,29 @@ namespace WorldTweaker.Components
 		{
 			// Set to water layer.
 			gameObject.layer = 4;
+			SetupUnderwaterEffect();
+		}
+
+		private void SetupUnderwaterEffect()
+		{
+			// Return early if already set up.
+			if (_underwaterVolume != null)
+				return;
+
+			var go = new GameObject("UnderwaterPPV");
+			go.layer = mainscript.M.player.DeadV.gameObject.layer;
+			_underwaterVolume = go.AddComponent<PostProcessVolume>();
+			_underwaterVolume.isGlobal = true;
+			_underwaterVolume.priority = 1f;
+
+			var profile = ScriptableObject.CreateInstance<PostProcessProfile>();
+
+			var colorGrading = profile.AddSettings<ColorGrading>();
+			colorGrading.colorFilter.Override(new Color(0.3f, 0.6f, 1f));
+			colorGrading.saturation.Override(-20f);
+
+			_underwaterVolume.profile = profile;
+			_underwaterVolume.weight = 0f;
 		}
 
 		public void LateUpdate()
@@ -90,6 +115,13 @@ namespace WorldTweaker.Components
 					}
 				}
 			}
+
+			// Set under water effect.
+			_underwaterVolume.weight = Mathf.Lerp(
+				_underwaterVolume.weight,
+				IsPlayerDrowning && !player.otherView() ? 1f : 0f,
+				Time.deltaTime * 2f
+			);
 		}
 
 		public void SetScale(float scale)
