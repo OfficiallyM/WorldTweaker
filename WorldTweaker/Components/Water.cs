@@ -31,7 +31,11 @@ namespace WorldTweaker.Components
 		private static float _playerDepth;
 		private static float _drownRecoveryTime = -1f;
 
-		private Dictionary<Rigidbody, (float drag, float angularDrag, float jumpForce)> _originalValues = new Dictionary<Rigidbody, (float, float, float)>();
+		private Dictionary<Rigidbody, (
+			float drag,
+			float angularDrag,
+			float jumpForce
+		)> _originalValues = new Dictionary<Rigidbody, (float, float, float)>();
 
 		public void OnGUI()
 		{
@@ -43,7 +47,10 @@ namespace WorldTweaker.Components
 
 		public void LateUpdate()
 		{
-			material.mainTextureOffset += new Vector2(Mathf.PerlinNoise(Time.timeSinceLevelLoad * 0.1f, 0.0f) - 0.5f, Mathf.PerlinNoise(250f, Time.timeSinceLevelLoad * 0.1f) - 0.5f) * Time.deltaTime * 0.005f;
+			material.mainTextureOffset += new Vector2(
+				Mathf.PerlinNoise(Time.timeSinceLevelLoad * 0.1f, 0.0f) - 0.5f,
+				Mathf.PerlinNoise(250f, Time.timeSinceLevelLoad * 0.1f) - 0.5f
+			) * Time.deltaTime * 0.005f;
 
 			// Keep original values dictionary clean.
 			foreach (var key in new List<Rigidbody>(_originalValues.Keys))
@@ -127,8 +134,14 @@ namespace WorldTweaker.Components
 
 			UpdateDrag(rb, depth);
 			UpdatePlayer(rb, depth);
+			UpdateTanks(rb, depth);
 		}
 
+		/// <summary>
+		/// Handle application of rigidbody drag when in water.
+		/// </summary>
+		/// <param name="rb">Rigidbody in water</param>
+		/// <param name="depth">Current water depth</param>
 		private void UpdateDrag(Rigidbody rb, float depth)
 		{
 			// Return early if the original values aren't cached
@@ -146,6 +159,11 @@ namespace WorldTweaker.Components
 			rb.AddForce(Vector3.up * 50f * depth / rb.mass);
 		}
 
+		/// <summary>
+		/// Handle player swimming.
+		/// </summary>
+		/// <param name="rb">Rigidbody in water</param>
+		/// <param name="depth">Current water depth</param>
 		private void UpdatePlayer(Rigidbody rb, float depth)
 		{
 			fpscontroller player = mainscript.M.player;
@@ -220,6 +238,37 @@ namespace WorldTweaker.Components
 					if (_drown.value >= 1f && !mainscript.M.died)
 						mainscript.M.player.Death();
 				}
+			}
+		}
+
+		/// <summary>
+		/// Fill any open tanks when under water.
+		/// </summary>
+		/// <param name="rb">Rigidbody in water</param>
+		/// <param name="depth">Current water depth</param>
+		private void UpdateTanks(Rigidbody rb, float depth)
+		{
+			float fillRate = 0.5f * depth * Time.fixedDeltaTime;
+
+			foreach (var tank in rb.transform.root.GetComponentsInChildren<tankscript>())
+			{
+				if (tank.F.GetAmount() >= tank.F.maxC) 
+					continue;
+
+				bool open = false;
+				foreach (var cap in tank.TC)
+				{
+					if (cap.valve > 0 && cap.TCap.position.y < transform.position.y)
+					{
+						open = true;
+						break;
+					}
+				}
+
+				if (!open) 
+					continue;
+
+				tank.F.ChangeOne(fillRate, mainscript.fluidenum.water);
 			}
 		}
 	}
