@@ -135,6 +135,15 @@ namespace WorldTweaker.Components
 			if (collider.attachedRigidbody == null)
 				return;
 			var rb = collider.attachedRigidbody;
+
+			// Kill bunnies on contact with water.
+			var bunny = rb.transform.root.GetComponentInChildren<nyulscript>();
+			if (bunny != null)
+			{
+				bunny.breakable.TryBreak(bunny.breakable.health);
+				return;
+			}
+
 			if (_originalValues.ContainsKey(rb))
 				return;
 			var player = mainscript.M.player;
