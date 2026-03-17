@@ -26,6 +26,8 @@ namespace WorldTweaker.Components
 			}
 		}
 
+		public static Water ClosestWater;
+
 		private const float DrownRecoveryDelay = 3f;
 
 		private static Slider _drown;
@@ -49,7 +51,7 @@ namespace WorldTweaker.Components
 
 		public void Start()
 		{
-			// Set to water layer.
+			// Set to use water layer.
 			gameObject.layer = 4;
 			SetupUnderwaterEffect();
 		}
@@ -83,13 +85,32 @@ namespace WorldTweaker.Components
 				Mathf.PerlinNoise(250f, Time.timeSinceLevelLoad * 0.1f) - 0.5f
 			) * Time.deltaTime * 0.005f;
 
+
 			// Keep original values dictionary clean.
 			foreach (var key in new List<Rigidbody>(_originalValues.Keys))
 				if (key == null)
 					_originalValues.Remove(key);
 
-			// Disable gravity when swimming.
 			fpscontroller player = mainscript.M.player;
+
+			// Find the closest water.
+			Water closest = null;
+			float closestDist = float.MaxValue;
+			foreach (var water in WorldTweaker.Water.DistantWater.Values)
+			{
+				float dist = Vector3.Distance(water.transform.position, player.transform.position);
+				if (dist < closestDist)
+				{
+					closestDist = dist;
+					closest = water;
+				}
+			}
+			ClosestWater = closest;
+
+			if (ClosestWater != this)
+				return;
+
+			// Disable gravity when swimming.
 			if (IsPlayerSwimming && player.RB != null)
 				player.RB.useGravity = false;
 
@@ -122,6 +143,17 @@ namespace WorldTweaker.Components
 				IsPlayerDrowning && !player.otherView() ? 1f : 0f,
 				Time.deltaTime * 2f
 			);
+
+			// Allow filling of tanks when held.
+			// This has to be handled here as held objects are kinematic
+			// and so don't fire OnTriggerStay.
+			var heldTanks = new List<tankscript>();
+			if (player.pickedUp != null)
+				heldTanks.AddRange(player.pickedUp.GetComponentsInChildren<tankscript>());
+			if (player.inHandP != null)
+				heldTanks.AddRange(player.inHandP.GetComponentsInChildren<tankscript>());
+			if (heldTanks.Count > 0)
+				FillTanks(heldTanks.ToArray());
 		}
 
 		public void SetScale(float scale)
@@ -296,38 +328,31 @@ namespace WorldTweaker.Components
 		/// <param name="depth">Current water depth</param>
 		private void UpdateTanks(Rigidbody rb, float depth)
 		{
-			float fillRate = 0.5f * depth * Time.fixedDeltaTime;
+			FillTanks(rb.transform.root.GetComponentsInChildren<tankscript>());	
+		}
 
-			var tanks = rb?.transform?.root?.GetComponentsInChildren<tankscript>();
-			if (tanks == null)
-				return;
-
+		private void FillTanks(tankscript[] tanks)
+		{
 			foreach (var tank in tanks)
 			{
-				if (tank.F == null || tank.F.GetAmount() >= tank.F.maxC) 
+				if (tank.F.GetAmount() >= tank.F.maxC)
 					continue;
 
 				bool open = false;
-				if (tank.TC == null)
+				foreach (var cap in tank.TC)
 				{
-					open = true;
-				}
-				else
-				{
-					foreach (var cap in tank.TC)
+					float capDepth = transform.position.y - cap.transform.position.y;
+					if (cap.valve > 0 && capDepth > 0)
 					{
-						Vector3 pos = cap.TCap != null ? cap.TCap.position : cap.transform.position;
-						if (cap.valve > 0 && pos.y < transform.position.y)
-						{
-							open = true;
-							break;
-						}
+						open = true;
+						break;
 					}
 				}
 
-				if (!open) 
+				if (!open)
 					continue;
 
+				float fillRate = 0.5f * (transform.position.y - tank.transform.position.y) * Time.fixedDeltaTime;
 				tank.F.ChangeOne(fillRate, mainscript.fluidenum.water);
 			}
 		}

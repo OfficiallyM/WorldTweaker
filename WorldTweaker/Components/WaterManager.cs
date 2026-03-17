@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using WorldTweaker.Utilities;
 
 namespace WorldTweaker.Components
 {
@@ -19,6 +20,13 @@ namespace WorldTweaker.Components
 						return 0;
 				}
 			}
+		}
+
+		public void Start()
+		{
+			// Add water layer to far camera culling mask to ensure water
+			// in the distance is rendered.
+			mainscript.M.player.farCamera.cullingMask |= (1 << 4);
 		}
 	}
 }
