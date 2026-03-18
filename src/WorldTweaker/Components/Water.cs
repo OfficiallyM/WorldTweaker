@@ -22,7 +22,7 @@ namespace WorldTweaker.Components
 		{
 			get
 			{
-				return _playerDepth > 0.7f;
+				return _playerDepth > 0.55f;
 			}
 		}
 
@@ -138,11 +138,7 @@ namespace WorldTweaker.Components
 			}
 
 			// Set under water effect.
-			_underwaterVolume.weight = Mathf.Lerp(
-				_underwaterVolume.weight,
-				IsPlayerDrowning && !player.otherView() ? 1f : 0f,
-				Time.deltaTime * 2f
-			);
+			_underwaterVolume.weight = IsPlayerDrowning && !player.otherView() ? 1f : 0f;
 
 			// Allow filling of tanks when held.
 			// This has to be handled here as held objects are kinematic
