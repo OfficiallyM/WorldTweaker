@@ -125,8 +125,23 @@ namespace WorldTweaker.Harmony
 				var waterPos = new Vector3(terrain.transform.position.x, (float)mainscript.M.mainWorld.coord.y + WorldTweaker.Water.WaterHeight, terrain.transform.position.z);
 				var water = GameObject.Instantiate(WorldTweaker.Prefabs.Water, waterPos, Quaternion.identity);
 				water.transform.SetParent(WorldTweaker.Water.WaterParent);
+				var worldOffset = new Vector3(
+					(float)mainscript.M.mainWorld.coord.x,
+					0,
+					(float)mainscript.M.mainWorld.coord.z
+				);
+				var size = (TerrainGenerationSettings.staticReference.defDistantTerrainSize / 2f) - 278f;
+				var waterMesh = WorldTweaker.Water.GenerateWaterMesh(
+					size,
+					mainscript.M.holes,
+					waterPos - worldOffset
+				);
+				water.GetComponent<MeshFilter>().mesh = waterMesh;
 				var waterController = water.GetComponent<Water>();
-				waterController.SetScale((TerrainGenerationSettings.staticReference.defDistantTerrainSize / 2f) - 278f);
+				waterController.SetTextureScale(size);
+				var col = water.GetComponent<BoxCollider>();
+				col.size = new Vector3(size, 100000f, size);
+				col.center = new Vector3(0f, -50000f, 0f);
 				WorldTweaker.Water.DistantWater.Add(terrain, waterController);
 			}
 		}

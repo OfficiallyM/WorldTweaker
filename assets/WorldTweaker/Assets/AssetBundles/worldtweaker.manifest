@@ -1,0 +1,20 @@
+ManifestFileVersion: 0
+CRC: 4212736877
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 63c843d27ce9d617c89fc8d6946075d5
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 4aa26f8f1366e2888248d90234c49b73
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/WaterShader.shader
+- Assets/Water.png
+Dependencies: []

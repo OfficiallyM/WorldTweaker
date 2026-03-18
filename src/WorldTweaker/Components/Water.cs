@@ -129,7 +129,7 @@ namespace WorldTweaker.Components
 
 					if (Time.time >= _drownRecoveryTime)
 					{
-						_drown.value -= 0.004f * Time.deltaTime;
+						_drown.value -= 0.04f * Time.deltaTime;
 
 						if (_drown.value <= 0f)
 							_drown.gameObject.SetActive(false);
@@ -156,9 +156,8 @@ namespace WorldTweaker.Components
 				FillTanks(heldTanks.ToArray());
 		}
 
-		public void SetScale(float scale)
+		public void SetTextureScale(float scale)
 		{
-			transform.localScale = new Vector3(scale, 0.01f, scale);
 			material.mainTextureScale = new Vector2(scale / 10f, scale / 10f);
 		}
 

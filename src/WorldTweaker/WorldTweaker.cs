@@ -11,6 +11,7 @@ using WorldTweaker.Harmony;
 using WorldTweaker.UI;
 using WorldTweaker.Utilities;
 using WorldTweaker.Utilities.UI;
+using static HarmonyLib.Code;
 
 namespace WorldTweaker
 {
@@ -24,7 +25,6 @@ namespace WorldTweaker
 		public override string Version => _version;
 		public override bool LoadInMenu => true;
 		public override bool LoadInDB => true;
-		public override bool UseAssetsFolder => true;
 		public override bool UseLogger => true;
 		public override bool UseHarmony => true;
 
@@ -227,6 +227,11 @@ namespace WorldTweaker
 
 		public override void DbLoad()
 		{
+			AssetBundle bundle = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(WorldTweaker)}.worldtweaker"));
+			Prefabs.WaterShader = bundle.LoadAsset<Shader>("WaterShader");
+			Prefabs.WaterTexture = bundle.LoadAsset<Texture>("Water");
+			bundle.Unload(false);
+
 			Save.InvalidateCache();
 			Prefabs.CreatePrefabs();
 			Water = mainscript.M.gameObject.AddComponent<WaterManager>();
