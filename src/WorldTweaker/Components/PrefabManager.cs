@@ -8,6 +8,7 @@ namespace WorldTweaker.Components
 		public GameObject Water;
 		public Shader WaterShader;
 		public Texture WaterTexture;
+		public GameObject[] PalmTrees;
 
 		public void CreatePrefabs()
 		{

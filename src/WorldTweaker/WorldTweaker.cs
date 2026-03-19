@@ -11,7 +11,6 @@ using WorldTweaker.Harmony;
 using WorldTweaker.UI;
 using WorldTweaker.Utilities;
 using WorldTweaker.Utilities.UI;
-using static HarmonyLib.Code;
 
 namespace WorldTweaker
 {
@@ -230,6 +229,9 @@ namespace WorldTweaker
 			AssetBundle bundle = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(WorldTweaker)}.worldtweaker"));
 			Prefabs.WaterShader = bundle.LoadAsset<Shader>("WaterShader");
 			Prefabs.WaterTexture = bundle.LoadAsset<Texture>("Water");
+			Prefabs.PalmTrees = bundle.LoadAllAssets<GameObject>()
+				.Where(go => go.name.StartsWith("Palm_"))
+				.ToArray();
 			bundle.Unload(false);
 
 			Save.InvalidateCache();
@@ -445,5 +447,7 @@ namespace WorldTweaker
 				CrateModifier.Value
 			));
 		}
+
+		
 	}
 }

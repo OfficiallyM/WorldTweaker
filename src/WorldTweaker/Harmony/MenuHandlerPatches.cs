@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using WorldTweaker.Components;
 using WorldTweaker.Core;
 using WorldTweaker.Utilities;
 
@@ -29,10 +30,12 @@ namespace WorldTweaker.Harmony
 				wt.CrateModifier.SetValue(worldData?.CrateModifier ?? 1);
 			}
 
-			// Force tropical to desert biome.
+			// Tropical setup.
 			if (wt.WorldType.Value == 2f)
 			{
+				// Force to desert biome.
 				mainscript.M.GSettings.biome = 1;
+				PalmTreesSetup();
 			}
 
 			Logging.LogDebug($"RoadLength: {wt.RoadLength}");
@@ -44,6 +47,23 @@ namespace WorldTweaker.Harmony
 			Logging.LogDebug($"ItemSpawnRate: {wt.ItemSpawnRate}");
 			Logging.LogDebug($"FluidAmount: {wt.FluidAmount}");
 			Logging.LogDebug($"CrateModifier: {wt.CrateModifier}");
+		}
+
+		private static void PalmTreesSetup()
+		{
+			var objGen = TerrainGenerationSettings.staticReference.objGeneration;
+			foreach (var t in objGen.objTypes)
+			{
+				if (!t.InDesert)
+					continue;
+
+				// Don't replace rocks.
+				string name = t.prefab.name.ToLower();
+				if (name.StartsWith("ko") || name.Contains("rock"))
+						continue;
+
+				t.prefab.AddComponent<PalmTreeSpawner>();
+			}
 		}
 	}
 }

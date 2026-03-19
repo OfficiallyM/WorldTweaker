@@ -41,14 +41,6 @@ namespace WorldTweaker.Components
 			float jumpForce
 		)> _originalValues = new Dictionary<Rigidbody, (float, float, float)>();
 
-		public void OnGUI()
-		{
-			if (!WorldTweaker.Debug) return;
-			var rb = mainscript.M.player?.RB;
-			GUI.Button(new Rect(0, 0, 300, 30), $"Depth: {_playerDepth}");
-			GUI.Button(new Rect(0, 35, 300, 30), $"Swimming: {IsPlayerSwimming}");
-		}
-
 		public void Start()
 		{
 			// Set to use water layer.
