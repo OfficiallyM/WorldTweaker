@@ -9,8 +9,62 @@ namespace WorldTweaker.Harmony
 	{
 		private static void Prefix(newRandomStuffSpawnScript __instance)
 		{
-			float rate = WorldTweaker.I.ItemSpawnRate.Value;
-			__instance.chanceToSpawn *= rate;
+			bool isMunkasSpawner = false;
+			foreach (var item in __instance.items)
+			{
+				if (item.prefab == "humanmonster")
+				{
+					isMunkasSpawner = true;
+					break;
+				}
+			}
+
+			__instance.chanceToSpawn *= isMunkasSpawner
+				? WorldTweaker.I.MunkasSpawnRate.Value
+				: WorldTweaker.I.ItemSpawnRate.Value;
+		}
+	}
+
+	[HarmonyPatch(typeof(newRandomStuffSpawnScript), nameof(newRandomStuffSpawnScript.Spawn))]
+	internal static class Patch_newRandomStuffSpawnScript_Spawn
+	{
+		private static bool _isSpawningExtra = false;
+
+		private static void Postfix(newRandomStuffSpawnScript __instance)
+		{
+			if (_isSpawningExtra)
+				return;
+
+			bool isMunkasSpawner = false;
+			foreach (var item in __instance.items)
+			{
+				if (item.prefab == "humanmonster")
+				{
+					isMunkasSpawner = true;
+					break;
+				}
+			}
+
+			if (!isMunkasSpawner)
+				return;
+
+			float rate = WorldTweaker.I.MunkasSpawnRate.Value;
+			int extraSpawns = Mathf.FloorToInt(rate) - 1;
+			float remainder = rate - Mathf.Floor(rate);
+
+			_isSpawningExtra = true;
+			try
+			{
+				for (int i = 0; i < extraSpawns; i++)
+					__instance.Spawn();
+
+				if (remainder > 0f && UnityEngine.Random.value < remainder)
+					__instance.Spawn();
+			}
+			finally
+			{
+				_isSpawningExtra = false;
+			}
 		}
 	}
 

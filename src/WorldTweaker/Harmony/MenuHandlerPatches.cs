@@ -26,6 +26,7 @@ namespace WorldTweaker.Harmony
 				wt.BuildingDensity.SetValue(worldData?.BuildingDensity ?? 1f);
 				wt.WorldType.SetValue(worldData?.WorldType ?? 1f);
 				wt.ItemSpawnRate.SetValue(worldData?.ItemSpawnRate ?? 1f);
+				wt.MunkasSpawnRate.SetValue(worldData?.MunkasSpawnRate ?? 1f);
 				wt.FluidAmount.SetValue(worldData?.FluidAmount ?? 1f);
 				wt.CrateModifier.SetValue(worldData?.CrateModifier ?? 1);
 			}
@@ -45,6 +46,7 @@ namespace WorldTweaker.Harmony
 			Logging.LogDebug($"BuildingDensity: {wt.BuildingDensity}");
 			Logging.LogDebug($"WorldType: {wt.WorldType}");
 			Logging.LogDebug($"ItemSpawnRate: {wt.ItemSpawnRate}");
+			Logging.LogDebug($"MunkasSpawnRate: {wt.MunkasSpawnRate}");
 			Logging.LogDebug($"FluidAmount: {wt.FluidAmount}");
 			Logging.LogDebug($"CrateModifier: {wt.CrateModifier}");
 		}

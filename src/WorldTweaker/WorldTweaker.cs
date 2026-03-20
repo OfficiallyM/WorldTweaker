@@ -17,7 +17,7 @@ namespace WorldTweaker
 	public class WorldTweaker : Mod
 	{
 		// Mod meta stuff.
-		private string _version = "2.0.0-alpha.1";
+		private string _version = "2.0.0";
 		public override string ID => "M_WorldTweaker";
 		public override string Name => "World Tweaker";
 		public override string Author => "M-";
@@ -153,6 +153,26 @@ namespace WorldTweaker
 
 		internal IndexSlider<float> ItemSpawnRate = new IndexSlider<float>(
 			"Item spawn rate",
+			new List<OptionSlider<float>>
+			{
+				new OptionSlider<float>(0f, "Zero"),
+				new OptionSlider<float>(0.1f, "1/10 vanilla"),
+				new OptionSlider<float>(0.25f, "1/4 vanilla"),
+				new OptionSlider<float>(0.33f, "1/3 vanilla"),
+				new OptionSlider<float>(0.5f, "1/2 vanilla"),
+				new OptionSlider<float>(0.75f, "3/4 vanilla"),
+				new OptionSlider<float>(1f, "Vanilla"),
+				new OptionSlider<float>(1.5f, "1.5x vanilla"),
+				new OptionSlider<float>(2f, "2x vanilla"),
+				new OptionSlider<float>(5f, "5x vanilla"),
+				new OptionSlider<float>(10f, "10x vanilla"),
+				new OptionSlider<float>(100f, "100x vanilla"),
+			},
+			6
+		);
+
+		internal IndexSlider<float> MunkasSpawnRate = new IndexSlider<float>(
+			"Munkas spawn rate",
 			new List<OptionSlider<float>>
 			{
 				new OptionSlider<float>(0f, "Zero"),
@@ -422,6 +442,7 @@ namespace WorldTweaker
 				GUILayout.Label("Note: Any changes made here will only apply to buildings/items not yet generated.", "LabelCenter");
 
 			ItemSpawnRate.Render();
+			MunkasSpawnRate.Render();
 			FluidAmount.Render();
 			CrateModifier.Render();
 		}
@@ -443,6 +464,7 @@ namespace WorldTweaker
 				BuildingDensity.Value,
 				WorldType.Value,
 				ItemSpawnRate.Value,
+				MunkasSpawnRate.Value,
 				FluidAmount.Value,
 				CrateModifier.Value
 			));

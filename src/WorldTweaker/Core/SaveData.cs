@@ -42,6 +42,7 @@ namespace WorldTweaker.Core
 		public float? BuildingDensity { get; set; }
 		public float? WorldType { get; set; }
 		public float? ItemSpawnRate { get; set; }
+		public float? MunkasSpawnRate { get; set; }
 		public float? FluidAmount { get; set; }
 		public int? CrateModifier { get; set; }
 
@@ -53,6 +54,7 @@ namespace WorldTweaker.Core
 			float? buildingDensity,
 			float? worldType,
 			float? itemSpawnRate,
+			float? munkasSpawnRate,
 			float? fluidAmount,
 			int? crateModifier
 		)
@@ -65,6 +67,7 @@ namespace WorldTweaker.Core
 			BuildingDensity = buildingDensity;
 			WorldType = worldType;
 			ItemSpawnRate = itemSpawnRate;
+			MunkasSpawnRate = munkasSpawnRate;
 			FluidAmount = fluidAmount;
 			CrateModifier = crateModifier;
 		}
@@ -79,6 +82,7 @@ namespace WorldTweaker.Core
 			sb.Append($"\nBuildingDensity: {BuildingDensity}");
 			sb.Append($"\nWorldType: {WorldType}");
 			sb.Append($"\nItemSpawnRate: {ItemSpawnRate}");
+			sb.Append($"\nMunkasSpawnRate: {MunkasSpawnRate}");
 			sb.Append($"\nFluidAmount: {FluidAmount}");
 			sb.Append($"\nFluidAmount: {FluidAmount}");
 			sb.Append($"\nCrateModifier: {CrateModifier}");
