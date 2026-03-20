@@ -6,6 +6,10 @@ namespace WorldTweaker.Components
 	{
 		public void Start()
 		{
+			Destroy(transform.GetComponent<breakablescript>());
+			Destroy(transform.GetComponent<materialChangeScript>());
+			Destroy(transform.GetComponent<grassscript>());
+
 			var prefab = WorldTweaker.Prefabs.PalmTrees[Random.Range(0, WorldTweaker.Prefabs.PalmTrees.Length)];
 			var palm = Instantiate(prefab, transform, false);
 			palm.transform.localPosition = Vector3.zero;

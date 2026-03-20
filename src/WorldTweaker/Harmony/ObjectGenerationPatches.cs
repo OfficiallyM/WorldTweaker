@@ -50,8 +50,8 @@ namespace WorldTweaker.Harmony
 				return;
 
 			// Destroy any objects under water.
-			float height = __instance.transform.position.y + (float)mainscript.M.mainWorld.coord.y;
-			if (height <= WorldTweaker.Water.WaterHeight)
+			float height = __instance.transform.position.y - (float)mainscript.M.mainWorld.coord.y;
+			if (height < WorldTweaker.Water.WaterHeight)
 				GameObject.Destroy(__instance.gameObject);
 		}
 	}

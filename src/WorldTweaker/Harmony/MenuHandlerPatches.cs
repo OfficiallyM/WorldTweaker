@@ -57,9 +57,9 @@ namespace WorldTweaker.Harmony
 				if (!t.InDesert)
 					continue;
 
-				// Don't replace rocks.
+				// Don't replace rocks or grass tufts.
 				string name = t.prefab.name.ToLower();
-				if (name.StartsWith("ko") || name.Contains("rock"))
+				if (name.StartsWith("ko") || name.Contains("rock") || name.Contains("fucsomo"))
 						continue;
 
 				t.prefab.AddComponent<PalmTreeSpawner>();
