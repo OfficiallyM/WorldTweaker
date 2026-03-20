@@ -447,7 +447,5 @@ namespace WorldTweaker
 				CrateModifier.Value
 			));
 		}
-
-		
 	}
 }
