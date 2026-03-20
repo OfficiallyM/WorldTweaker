@@ -17,7 +17,7 @@ namespace WorldTweaker
 	public class WorldTweaker : Mod
 	{
 		// Mod meta stuff.
-		private string _version = "2.0.0";
+		private string _version = "2.0.0-alpha.1";
 		public override string ID => "M_WorldTweaker";
 		public override string Name => "World Tweaker";
 		public override string Author => "M-";
@@ -145,7 +145,7 @@ namespace WorldTweaker
 				new OptionSlider<float>(0.85f, "Canyon"),
 				new OptionSlider<float>(1.25f, "Road bridge"),
 				new OptionSlider<float>(2f, "Tropical",
-					"Inspired by RUNDEN's tropical mod for the 2019 winter update"
+					"Inspired by RUNDEN's tropical mod for the 2019 winter update\nRecommended to increase building density to at least 2x."
 				),
 			},
 			1
