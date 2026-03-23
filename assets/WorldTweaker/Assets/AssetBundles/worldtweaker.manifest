@@ -1,0 +1,44 @@
+ManifestFileVersion: 0
+CRC: 1695308030
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 047902ac6bfdb02f1b86fd0098fa4c7a
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9f038e2107905ee470a690157f0621b1
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Palm Trees/prefabs/Palm_Tall_3.prefab
+- Assets/Palm Trees/prefabs/Palm_Small_1.prefab
+- Assets/Palm Trees/prefabs/Palm_Tall_4.prefab
+- Assets/Palm Trees/prefabs/Palm_Tall_5.prefab
+- Assets/Palm Trees/prefabs/Palm_Med_3.prefab
+- Assets/Palm Trees/prefabs/Palm_Small_2.prefab
+- Assets/WaterShader.shader
+- Assets/Palm Trees/prefabs/Palm_Tall_2.prefab
+- Assets/Palm Trees/prefabs/Palm_Med_1.prefab
+- Assets/Water.png
+- Assets/Palm Trees/prefabs/Palm_Med_2.prefab
+- Assets/Palm Trees/prefabs/Palm_Tall_1.prefab
+Dependencies: []

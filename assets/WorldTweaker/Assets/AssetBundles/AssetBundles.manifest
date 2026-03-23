@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 1272801306
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: worldtweaker
+      Dependencies: {}
