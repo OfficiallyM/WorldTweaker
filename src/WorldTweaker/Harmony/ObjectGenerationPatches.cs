@@ -33,7 +33,9 @@ namespace WorldTweaker.Harmony
 	{
 		private static void Postfix(RandomSpawnedObjScript __instance)
 		{
-			if (WorldTweaker.I.WorldType.Value != 2f) return;
+			var worldType = WorldTweaker.I.WorldType.Value;
+			if (worldType != 2f && worldType != 3f)
+				return;
 
 			// Allow mountains to spawn underwater.
 			string parent = __instance.transform.parent?.name;
@@ -41,8 +43,8 @@ namespace WorldTweaker.Harmony
 			if (parent == "G_MountainParent")
 				return;
 
-			// Allow ships to spawn underwater.
-			if (parent == "G_DesertTowerParent" && __instance.name.ToLowerInvariant().Contains("ship"))
+			// Allow ships to spawn underwater, but not under lava.
+			if (worldType == 2f && parent == "G_DesertTowerParent" && __instance.name.ToLowerInvariant().Contains("ship"))
 				return;
 
 			// Allow small rocks to spawn underwater.
