@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1695308030
+CRC: 1411267024
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 047902ac6bfdb02f1b86fd0098fa4c7a
+    Hash: 4ccf0d68a2badb551459dc0064fc67ba
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 9f038e2107905ee470a690157f0621b1
+    Hash: 96ff23d70f5d63979655dfb46ed53280
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -27,6 +27,8 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 64
   Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/Palm Trees/prefabs/Palm_Tall_3.prefab
@@ -40,5 +42,7 @@ Assets:
 - Assets/Palm Trees/prefabs/Palm_Med_1.prefab
 - Assets/Water.png
 - Assets/Palm Trees/prefabs/Palm_Med_2.prefab
+- Assets/burn.wav
 - Assets/Palm Trees/prefabs/Palm_Tall_1.prefab
+- Assets/Lava.mat
 Dependencies: []

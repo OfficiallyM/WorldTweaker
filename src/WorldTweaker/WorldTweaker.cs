@@ -147,6 +147,9 @@ namespace WorldTweaker
 				new OptionSlider<float>(2f, "Tropical",
 					"Inspired by RUNDEN's tropical mod for the 2019 winter update\nRecommended to increase building density to at least 2x."
 				),
+				new OptionSlider<float>(3f, "Lava",
+					"The floor is lava, literally.\nRecommended to increase building density to at least 2x."
+				),
 			},
 			1
 		);
@@ -249,9 +252,12 @@ namespace WorldTweaker
 			AssetBundle bundle = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(WorldTweaker)}.worldtweaker"));
 			Prefabs.WaterShader = bundle.LoadAsset<Shader>("WaterShader");
 			Prefabs.WaterTexture = bundle.LoadAsset<Texture>("Water");
+			Prefabs.LavaMaterial = bundle.LoadAsset<Material>("Lava");
 			Prefabs.PalmTrees = bundle.LoadAllAssets<GameObject>()
 				.Where(go => go.name.StartsWith("Palm_"))
 				.ToArray();
+			Prefabs.Burn = bundle.LoadAsset<AudioClip>("burn.wav");
+			Prefabs.PlayerSizzle = bundle.LoadAsset<AudioClip>("sizzle.wav");
 			bundle.Unload(false);
 
 			Save.InvalidateCache();
@@ -281,13 +287,10 @@ namespace WorldTweaker
 					if (buildingsMod != null)
 					{
 						var type = buildingsMod.GetType("SgtJoeBuildings.SgtJoeBuildingBase");
-
-						// Get the display class type too for the signature
 						var displayClassType = type.GetNestedType("<>c__DisplayClass32_0", BindingFlags.NonPublic);
-
 						var method = type.GetMethod(
-							"ParseItemFromSpawnString123123123123123", // replace with real name
-							BindingFlags.NonPublic | BindingFlags.Static,   // note: static, not instance
+							"ParseItemFromSpawnString123123123123123",
+							BindingFlags.NonPublic | BindingFlags.Static,
 							null,
 							new Type[] { typeof(string), typeof(string).MakeByRefType(), typeof(int).MakeByRefType(), displayClassType.MakeByRefType() },
 							null

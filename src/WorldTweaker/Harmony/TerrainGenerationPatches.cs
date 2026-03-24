@@ -13,31 +13,31 @@ namespace WorldTweaker.Harmony
 	{
 		public static void Postfix(ref float __result)
 		{
-			float flatness = WorldTweaker.I.WorldType.Value;
+			float worldType = WorldTweaker.I.WorldType.Value;
 
 			// Make no alterations for vanilla.
-			if (flatness == 1)
+			if (worldType == 1)
 				return;
 
 			// Force flat.
-			if (flatness == 0)
+			if (worldType == 0)
 			{
 				__result = 0;
 				return;
 			}
 			
 			// Road bridge.
-			if (flatness == 1.25f)
+			if (worldType == 1.25f)
 			{
 				__result = 1000f;
 				return;
 			}
 
-			// Tropical.
-			if (flatness == 2f)
+			// Tropical, lava.
+			if (worldType == 2f || worldType == 3f)
 				return;
 
-			__result *= flatness;
+			__result *= worldType;
 		}
 	}
 
@@ -47,10 +47,10 @@ namespace WorldTweaker.Harmony
 	{
 		public static void Postfix(ref float __result)
 		{
-			float flatness = WorldTweaker.I.WorldType.Value;
+			float worldType = WorldTweaker.I.WorldType.Value;
 
-			// Tropical.
-			if (flatness == 2f)
+			// Tropical, lava.
+			if (worldType == 2f || worldType == 3f)
 			{
 				__result = Mathf.Clamp(__result, WorldTweaker.Water.WaterHeight + 1f, float.PositiveInfinity);
 			}
@@ -95,8 +95,9 @@ namespace WorldTweaker.Harmony
 	{
 		public static void Postfix(TerrainGenerator __instance)
 		{
+			var worldType = WorldTweaker.I.WorldType.Value;
 			// Flat world, replace terrain with flat mesh.
-			if (WorldTweaker.I.WorldType.Value == 0)
+			if (worldType == 0)
 			{
 				var terrain = Traverse.Create(__instance).Field("currentPlacedDistantTerrain").GetValue<terrainscript>();
 				if (terrain == null) return;
@@ -115,12 +116,12 @@ namespace WorldTweaker.Harmony
 			// Tropical, place water.
 			// Deliberately not using close terrain for better coverage
 			// and to avoid overlap.
-			if (WorldTweaker.I.WorldType.Value == 2f)
+			if (worldType == 2f)
 			{
 				var terrain = Traverse.Create(__instance).Field("currentPlacedDistantTerrain").GetValue<terrainscript>();
 				if (terrain == null) return;
 
-				if (WorldTweaker.Water.DistantWater.ContainsKey(terrain)) return;
+				if (WorldTweaker.Water.WaterTiles.ContainsKey(terrain)) return;
 
 				var waterPos = new Vector3(terrain.transform.position.x, (float)mainscript.M.mainWorld.coord.y + WorldTweaker.Water.WaterHeight, terrain.transform.position.z);
 				var water = GameObject.Instantiate(WorldTweaker.Prefabs.Water, waterPos, Quaternion.identity);
@@ -134,15 +135,41 @@ namespace WorldTweaker.Harmony
 				var waterMesh = WorldTweaker.Water.GenerateWaterMesh(
 					size,
 					mainscript.M.holes,
-					waterPos - worldOffset
+					waterPos - worldOffset,
+					water
 				);
 				water.GetComponent<MeshFilter>().mesh = waterMesh;
 				var waterController = water.GetComponent<Water>();
 				waterController.SetTextureScale(size);
-				var col = water.GetComponent<BoxCollider>();
-				col.size = new Vector3(size, 100000f, size);
-				col.center = new Vector3(0f, -50000f, 0f);
-				WorldTweaker.Water.DistantWater.Add(terrain, waterController);
+				WorldTweaker.Water.WaterTiles.Add(terrain, waterController);
+			}
+
+			// Lava.
+			if (worldType == 3f)
+			{
+				var terrain = Traverse.Create(__instance).Field("currentPlacedDistantTerrain").GetValue<terrainscript>();
+				if (terrain == null) return;
+
+				if (WorldTweaker.Water.LavaTiles.ContainsKey(terrain)) return;
+
+				var lavaPos = new Vector3(terrain.transform.position.x, (float)mainscript.M.mainWorld.coord.y + WorldTweaker.Water.WaterHeight, terrain.transform.position.z);
+				var lava = GameObject.Instantiate(WorldTweaker.Prefabs.Lava, lavaPos, Quaternion.identity);
+				lava.transform.SetParent(WorldTweaker.Water.WaterParent);
+				var worldOffset = new Vector3(
+					(float)mainscript.M.mainWorld.coord.x,
+					0,
+					(float)mainscript.M.mainWorld.coord.z
+				);
+				var size = (TerrainGenerationSettings.staticReference.defDistantTerrainSize / 2f) - 278f;
+				var lavaMesh = WorldTweaker.Water.GenerateWaterMesh(
+					size,
+					mainscript.M.holes,
+					lavaPos - worldOffset,
+					lava
+				);
+				lava.GetComponent<MeshFilter>().mesh = lavaMesh;
+				var lavaController = lava.GetComponent<Lava>();
+				WorldTweaker.Water.LavaTiles.Add(terrain, lavaController);
 			}
 		}
 	}
@@ -177,16 +204,33 @@ namespace WorldTweaker.Harmony
 		public static void Postfix(TerrainManager __instance)
 		{
 			var removeQueue = new List<terrainscript>();
-			foreach (var water in WorldTweaker.Water.DistantWater)
+
+			if (WorldTweaker.I.WorldType.Value == 2f)
 			{
-				if (water.Key == null || !__instance.generator.allterrainsDistant.Contains(water.Key))
-					removeQueue.Add(water.Key);
+				foreach (var water in WorldTweaker.Water.WaterTiles)
+				{
+					if (water.Key == null || !__instance.generator.allterrainsDistant.Contains(water.Key))
+						removeQueue.Add(water.Key);
+				}
+				foreach (var terrain in removeQueue)
+				{
+					GameObject.Destroy(WorldTweaker.Water.WaterTiles[terrain].gameObject);
+					WorldTweaker.Water.WaterTiles.Remove(terrain);
+				}
 			}
 
-			foreach (var terrain in removeQueue)
+			if (WorldTweaker.I.WorldType.Value == 3f)
 			{
-				GameObject.Destroy(WorldTweaker.Water.DistantWater[terrain].gameObject);
-				WorldTweaker.Water.DistantWater.Remove(terrain);
+				foreach (var lava in WorldTweaker.Water.LavaTiles)
+				{
+					if (lava.Key == null || !__instance.generator.allterrainsDistant.Contains(lava.Key))
+						removeQueue.Add(lava.Key);
+				}
+				foreach (var terrain in removeQueue)
+				{
+					GameObject.Destroy(WorldTweaker.Water.LavaTiles[terrain].gameObject);
+					WorldTweaker.Water.LavaTiles.Remove(terrain);
+				}
 			}
 		}
 	}
@@ -196,6 +240,10 @@ namespace WorldTweaker.Harmony
 	{
 		private static void Postfix(terrainHeightAlignToBuildingScript __instance)
 		{
+			var worldType = WorldTweaker.I.WorldType.Value;
+			if (worldType != 2f && worldType != 3f)
+				return;
+
 			string name = __instance.name.ToLowerInvariant();
 			if (name.Contains("road")) return;
 

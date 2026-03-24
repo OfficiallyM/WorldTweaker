@@ -77,7 +77,6 @@ namespace WorldTweaker.Components
 				Mathf.PerlinNoise(250f, Time.timeSinceLevelLoad * 0.1f) - 0.5f
 			) * Time.deltaTime * 0.005f;
 
-
 			// Keep original values dictionary clean.
 			foreach (var key in new List<Rigidbody>(_originalValues.Keys))
 				if (key == null)
@@ -88,7 +87,7 @@ namespace WorldTweaker.Components
 			// Find the closest water.
 			Water closest = null;
 			float closestDist = float.MaxValue;
-			foreach (var water in WorldTweaker.Water.DistantWater.Values)
+			foreach (var water in WorldTweaker.Water.WaterTiles.Values)
 			{
 				float dist = Vector3.Distance(water.transform.position, player.transform.position);
 				if (dist < closestDist)
