@@ -15,8 +15,10 @@ namespace WorldTweaker.Components
 			{
 				switch (WorldTweaker.I.WorldType.Value)
 				{
+					// Tropical.
 					case 2f:
 						return 449f;
+					// Lava.
 					case 3f: 
 						return 999f;
 					default:
