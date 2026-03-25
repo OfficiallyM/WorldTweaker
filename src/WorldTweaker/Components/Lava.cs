@@ -44,10 +44,11 @@ namespace WorldTweaker.Components
 
 		public void LateUpdate()
 		{
-			material.mainTextureOffset += new Vector2(
-				Mathf.PerlinNoise(Time.timeSinceLevelLoad * 0.1f, 0.0f) - 0.5f,
-				Mathf.PerlinNoise(250f, Time.timeSinceLevelLoad * 0.1f) - 0.5f
-			) * Time.deltaTime * 0.0001f;
+			var offset = material.mainTextureOffset + new Vector2(1f, 1f) * Time.deltaTime * 0.0001f;
+			material.mainTextureOffset = new Vector2(
+				Mathf.Repeat(offset.x, 1f),
+				Mathf.Repeat(offset.y, 1f)
+			);
 		}
 
 		public void Update()
