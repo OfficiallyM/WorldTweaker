@@ -12,7 +12,6 @@ namespace WorldTweaker.Components
 		public Material LavaMaterial;
 		public GameObject[] PalmTrees;
 		public AudioClip Burn;
-		public AudioClip PlayerSizzle;
 
 		public void CreatePrefabs()
 		{

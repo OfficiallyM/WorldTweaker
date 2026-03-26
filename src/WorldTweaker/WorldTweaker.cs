@@ -257,7 +257,6 @@ namespace WorldTweaker
 				.Where(go => go.name.StartsWith("Palm_"))
 				.ToArray();
 			Prefabs.Burn = bundle.LoadAsset<AudioClip>("burn.wav");
-			Prefabs.PlayerSizzle = bundle.LoadAsset<AudioClip>("sizzle.wav");
 			bundle.Unload(false);
 
 			Save.InvalidateCache();
