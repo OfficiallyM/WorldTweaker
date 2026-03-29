@@ -298,6 +298,27 @@ namespace WorldTweaker
 						harmonyInstance.Patch(method, postfix: new HarmonyMethod(typeof(Patch_SgtJoeBuildingBase_ParseItemFromSpawnString), nameof(Patch_SgtJoeBuildingBase_ParseItemFromSpawnString.Postfix)));
 					}
 				}
+
+				if (ModLoaderUtilities.DoesModExist("SgtJoeWeather"))
+				{
+					var weatherMod = AppDomain.CurrentDomain.GetAssemblies()
+						.FirstOrDefault(a => a.GetName().Name == "Weather");
+
+					if (weatherMod != null)
+					{
+						var weatherScriptType = weatherMod.GetType("Weather.Weather+WeatherScript");
+						var method = weatherScriptType.GetMethod(
+							"ChooseNewWeather",
+							BindingFlags.NonPublic | BindingFlags.Instance
+						);
+
+						harmonyInstance.Patch(method, postfix: new HarmonyMethod(
+							typeof(Patch_WeatherScript_ChooseNewWeather),
+							nameof(Patch_WeatherScript_ChooseNewWeather.Postfix)
+						));
+					}
+				}
+
 				_firstRun = false;
 			}
 
