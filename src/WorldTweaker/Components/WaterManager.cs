@@ -46,10 +46,6 @@ namespace WorldTweaker.Components
 			// Add water layer to far camera culling mask to ensure water
 			// in the distance is rendered.
 			mainscript.M.player.farCamera.cullingMask |= (1 << 4);
-
-			Logging.LogDebug($"Close size: {TerrainGenerationSettings.staticReference.defTerrainSize}");
-			Logging.LogDebug($"Distant size: {TerrainGenerationSettings.staticReference.defDistantTerrainSize}");
-			Logging.LogDebug($"Distant2 size: {TerrainGenerationSettings.staticReference.defDistantTerrain2Size}");
 		}
 
 		public Mesh GenerateWaterMesh(float size, List<digholescript2> holes, Vector3 worldPos, GameObject waterObj, TerrainType terrainType)

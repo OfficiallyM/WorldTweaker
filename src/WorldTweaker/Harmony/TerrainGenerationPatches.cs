@@ -1,10 +1,8 @@
 ﻿using HarmonyLib;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using WorldTweaker.Components;
 using WorldTweaker.Utilities;
-using static stuffSpawnOnTerrain;
 
 namespace WorldTweaker.Harmony
 {
@@ -92,7 +90,7 @@ namespace WorldTweaker.Harmony
 
 			// Liquid tile generation.
 			// Distant terrain is enabled, let that handle liquid tiles.
-			if (__instance.manager.settings.GenerateDistantTerrain || __instance.manager.settings.GenerateDistantTerrain2)
+			if (settingsscript.s.S.BFarTerrain)
 				return;
 
 			var liquidType = WaterManager.LiquidType.Water;
