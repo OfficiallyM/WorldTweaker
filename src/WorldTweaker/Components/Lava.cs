@@ -4,7 +4,7 @@ using WorldTweaker.Utilities;
 
 namespace WorldTweaker.Components
 {
-	internal class Lava : MonoBehaviour
+	internal class Lava : Liquid
 	{
 		public Material material;
 		public static Lava ClosestLava;
@@ -58,13 +58,14 @@ namespace WorldTweaker.Components
 			// Find the closest lava tile.
 			Lava closest = null;
 			float closestDist = float.MaxValue;
-			foreach (var lava in WorldTweaker.Water.LavaTiles.Values)
+			foreach (var tile in WorldTweaker.Water.LiquidTiles.Values)
 			{
+				var lava = tile.controller;
 				float dist = Vector3.Distance(lava.transform.position, player.transform.position);
 				if (dist < closestDist)
 				{
 					closestDist = dist;
-					closest = lava;
+					closest = lava as Lava;
 				}
 			}
 			ClosestLava = closest;

@@ -6,7 +6,7 @@ using WorldTweaker.Utilities;
 
 namespace WorldTweaker.Components
 {
-	internal class Water : MonoBehaviour
+	internal class Water : Liquid
 	{
 		public Material material;
 
@@ -87,13 +87,14 @@ namespace WorldTweaker.Components
 			// Find the closest water.
 			Water closest = null;
 			float closestDist = float.MaxValue;
-			foreach (var water in WorldTweaker.Water.WaterTiles.Values)
+			foreach (var tile in WorldTweaker.Water.LiquidTiles.Values)
 			{
+				var water = tile.controller;
 				float dist = Vector3.Distance(water.transform.position, player.transform.position);
 				if (dist < closestDist)
 				{
 					closestDist = dist;
-					closest = water;
+					closest = water as Water;
 				}
 			}
 			ClosestWater = closest;
