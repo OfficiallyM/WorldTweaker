@@ -236,6 +236,9 @@ namespace WorldTweaker.Harmony
 			if (worldType != 2f && worldType != 3f)
 				return;
 
+			if (__instance.transform.position.y > WorldTweaker.Water.WaterHeight + 5f)
+				return;
+
 			string name = __instance.name.ToLowerInvariant();
 			if (name.Contains("road")) return;
 
