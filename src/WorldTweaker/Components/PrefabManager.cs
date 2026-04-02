@@ -87,7 +87,6 @@ namespace WorldTweaker.Components
 
 		private void SetupObject(GameObject obj, int id, bool pickupable = true, bool attachable = true, Sprite invImg = null)
 		{
-			Logging.LogDebug($"Setting up obj {obj.name}, category: {WorldTweaker.Category}, id: {id}, pickupable: {pickupable}, attachable: {attachable}");
 			var toSave = MakeSavable(Coconut, 0);
 
 			var rb = obj.GetComponent<Rigidbody>();

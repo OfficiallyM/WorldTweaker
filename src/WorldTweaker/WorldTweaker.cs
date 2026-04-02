@@ -264,7 +264,6 @@ namespace WorldTweaker
 			Save.InvalidateCache();
 			Prefabs.CreatePrefabs();
 			Water = mainscript.M.gameObject.AddComponent<WaterManager>();
-			Logging.LogDebug("DbLoad finished");
 		}
 
 		public override void OnLoad()
