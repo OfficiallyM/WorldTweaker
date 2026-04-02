@@ -265,6 +265,7 @@ namespace WorldTweaker
 				.ToArray();
 			Prefabs.Burn = bundle.LoadAsset<AudioClip>("burn.wav");
 			Prefabs.Coconut = bundle.LoadAsset<GameObject>("Coconut");
+			Prefabs.CoconutInv = bundle.LoadAsset<Sprite>("CoconutInv");
 			bundle.Unload(false);
 
 			Save.InvalidateCache();

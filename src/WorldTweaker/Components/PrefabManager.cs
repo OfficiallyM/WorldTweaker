@@ -16,6 +16,7 @@ namespace WorldTweaker.Components
 		public GameObject[] PalmTrees;
 		public AudioClip Burn;
 		public GameObject Coconut;
+		public Sprite CoconutInv;
 
 		public void CreatePrefabs()
 		{
@@ -46,7 +47,7 @@ namespace WorldTweaker.Components
 
 			// Coconuts.
 			Coconut.AddComponent<Coconut>();
-			SetupObject(Coconut, 0);
+			SetupObject(Coconut, 0, invImg: CoconutInv);
 			var coconutToSave = Coconut.GetComponent<tosaveitemscript>();
 			var coconutTank = Coconut.CopyComponent(itemdatabase.d.gcactigib01.GetComponent<tankscript>());
 			coconutTank.tosaveid = coconutToSave.idInSave;
