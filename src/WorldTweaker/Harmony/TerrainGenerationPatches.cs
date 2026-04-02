@@ -243,8 +243,9 @@ namespace WorldTweaker.Harmony
 			if (name.Contains("road")) return;
 
 			float multiplier = 3f;
-			if (name == "haz02")
-				multiplier = 4f;
+			if (name.Contains("haz02"))
+				multiplier = mainscript.M.loaded ? 10f : 4f;
+
 			for (int i = 0; i < __instance.helpPosList.Count; i++)
 			{
 				var helpPos = __instance.helpPosList[i];
