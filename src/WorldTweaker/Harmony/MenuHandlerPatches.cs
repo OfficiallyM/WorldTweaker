@@ -64,7 +64,7 @@ namespace WorldTweaker.Harmony
 				if (name.StartsWith("ko") || name.Contains("rock") || name.Contains("fucsomo"))
 						continue;
 
-				t.prefab.AddComponent<PalmTreeSpawner>();
+				t.prefab.AddComponent<PalmTree>();
 			}
 		}
 	}

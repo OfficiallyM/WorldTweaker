@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TLDLoader.Extensions;
+using UnityEngine;
 using WorldTweaker.Utilities;
 
 namespace WorldTweaker.Components
@@ -12,6 +15,7 @@ namespace WorldTweaker.Components
 		public Material LavaMaterial;
 		public GameObject[] PalmTrees;
 		public AudioClip Burn;
+		public GameObject Coconut;
 
 		public void CreatePrefabs()
 		{
@@ -39,6 +43,78 @@ namespace WorldTweaker.Components
 			lavaMaterial.mainTextureScale = new Vector2(200f, 200f);
 			renderer.material = lavaMaterial;
 			Lava.AddComponent<Lava>().material = lavaMaterial;
+
+			Coconut.AddComponent<Coconut>();
+			SetupObject(Coconut, 0);
+		}
+
+		public tosaveitemscript MakeSavable(GameObject obj, int id)
+		{
+			if (obj.GetComponent<tosaveitemscript>() != null)
+				return null;
+
+			var toSave = obj.AddComponent<tosaveitemscript>();
+			toSave.category = WorldTweaker.Category;
+			toSave.id = id;
+			toSave.randomizetanks = new tankscript[0];
+			toSave.partconditions = new partconditionscript[0];
+			toSave.tanks = new tankscript[0];
+			toSave.tankcapscripts = new tankcapscript[0];
+			toSave.partslotscripts = new partslotscript[0];
+			toSave.usables = new usablescript[0];
+			toSave.attachTargets = new attachTargetscript[0];
+			toSave.door_rots = new door_rot[0];
+			toSave.randomScales = new randomScaleScript[0];
+			toSave.physlocks = new mountStuff[0];
+			toSave.mirrorsStart = new List<mirrorscript>();
+			toSave.interiorLights = new List<interiorLightScript>();
+
+			var attach = obj.GetComponent<attachablescript>();
+			if (attach != null)
+				toSave.attachable = attach;
+
+			return toSave;
+		}
+
+		private void SetupObject(GameObject obj, int id, bool pickupable = true, bool attachable = true, Sprite invImg = null)
+		{
+			Logging.LogDebug($"Setting up obj {obj.name}, category: {WorldTweaker.Category}, id: {id}, pickupable: {pickupable}, attachable: {attachable}");
+			var toSave = MakeSavable(Coconut, 0);
+
+			var rb = obj.GetComponent<Rigidbody>();
+			if (rb == null)
+				return;
+
+			var mass = Coconut.AddComponent<massScript>();
+			mass.SetMass(rb.mass);
+
+			if (!pickupable)
+				return;
+
+			var pickup = obj.CopyComponent(itemdatabase.d.gww2compass.GetComponent<pickupable>());
+			pickup.mass = mass;
+			mass.P = pickup;
+			pickup.RB = rb;
+			pickup.invImg = invImg;
+
+			List<layerScript> layers = new List<layerScript>();
+			var colliders = obj.GetComponentsInChildren<Collider>().ToList();
+			foreach (var collider in colliders)
+			{
+				var layer = collider.gameObject.AddComponent<layerScript>();
+				layer.col = collider;
+				layer.p = pickup;
+				layers.Add(layer);
+			}
+			pickup.cols = layers.ToArray();
+
+			if (!attachable)
+				return;
+
+			var attach = obj.CopyComponent(itemdatabase.d.gww2compass.GetComponent<attachablescript>());
+			attach.C = colliders;
+			pickup.attach = attach;
+			toSave.attachable = attach;
 		}
 	}
 }

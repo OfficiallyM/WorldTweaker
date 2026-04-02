@@ -28,6 +28,7 @@ namespace WorldTweaker
 		public override bool UseHarmony => true;
 
 		internal static WorldTweaker I;
+		internal static int Category => Hash.FNV1(I.ID);
 
 		internal static bool IsOnMenu => mainscript.M == null;
 		internal static bool IsPaused
@@ -145,7 +146,7 @@ namespace WorldTweaker
 				new OptionSlider<float>(0.85f, "Canyon"),
 				new OptionSlider<float>(1.25f, "Road bridge"),
 				new OptionSlider<float>(2f, "Tropical",
-					"Inspired by RUNDEN's tropical mod for the 2019 winter update\nRecommended to increase building density to at least 2x."
+					"Inspired by RUNDEN's tropical mod for the 2019 winter update\nRecommended to increase building density to at least 1.5x."
 				),
 				new OptionSlider<float>(3f, "Lava",
 					"The floor is lava, literally.\nRecommended to increase building density to at least 2x."
@@ -254,14 +255,16 @@ namespace WorldTweaker
 			Prefabs.WaterTexture = bundle.LoadAsset<Texture>("Water");
 			Prefabs.LavaMaterial = bundle.LoadAsset<Material>("Lava");
 			Prefabs.PalmTrees = bundle.LoadAllAssets<GameObject>()
-				.Where(go => go.name.StartsWith("Palm_"))
+				.Where(go => go.name.StartsWith("Palm_"))	
 				.ToArray();
 			Prefabs.Burn = bundle.LoadAsset<AudioClip>("burn.wav");
+			Prefabs.Coconut = bundle.LoadAsset<GameObject>("Coconut");
 			bundle.Unload(false);
 
 			Save.InvalidateCache();
 			Prefabs.CreatePrefabs();
 			Water = mainscript.M.gameObject.AddComponent<WaterManager>();
+			Logging.LogDebug("DbLoad finished");
 		}
 
 		public override void OnLoad()
