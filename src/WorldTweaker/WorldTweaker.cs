@@ -82,6 +82,7 @@ namespace WorldTweaker
 			new List<OptionSlider<float>>
 			{
 				new OptionSlider<float>(0f, "Zero"),
+				new OptionSlider<float>(0.01f, "1/100 vanilla"),
 				new OptionSlider<float>(0.1f, "1/10 vanilla"),
 				new OptionSlider<float>(0.25f, "1/4 vanilla"),
 				new OptionSlider<float>(0.33f, "1/3 vanilla"),
@@ -94,7 +95,7 @@ namespace WorldTweaker
 				new OptionSlider<float>(10f, "10x vanilla"),
 				new OptionSlider<float>(100f, "100x vanilla (painfully slow to load)"),
 			},
-			6
+			7
 		);
 
 		internal IndexSlider<float> MountainDensity = new IndexSlider<float>(
@@ -102,6 +103,7 @@ namespace WorldTweaker
 			new List<OptionSlider<float>>
 			{
 				new OptionSlider<float>(0f, "Zero"),
+				new OptionSlider<float>(0.01f, "1/100 vanilla"),
 				new OptionSlider<float>(0.1f, "1/10 vanilla"),
 				new OptionSlider<float>(0.25f, "1/4 vanilla"),
 				new OptionSlider<float>(0.33f, "1/3 vanilla"),
@@ -114,7 +116,7 @@ namespace WorldTweaker
 				new OptionSlider<float>(10f, "10x vanilla"),
 				new OptionSlider<float>(100f, "100x vanilla (painfully slow to load)"),
 			},
-			6
+			7
 		);
 
 		internal IndexSlider<float> BuildingDensity = new IndexSlider<float>(
@@ -122,6 +124,7 @@ namespace WorldTweaker
 			new List<OptionSlider<float>>
 			{
 				new OptionSlider<float>(0f, "Zero"),
+				new OptionSlider<float>(0.01f, "1/100 vanilla"),
 				new OptionSlider<float>(0.1f, "1/10 vanilla"),
 				new OptionSlider<float>(0.25f, "1/4 vanilla"),
 				new OptionSlider<float>(0.33f, "1/3 vanilla"),
@@ -134,7 +137,7 @@ namespace WorldTweaker
 				new OptionSlider<float>(10f, "10x vanilla"),
 				new OptionSlider<float>(100f, "100x vanilla"),
 			},
-			6
+			7
 		);
 
 		internal IndexSlider<float> WorldType = new IndexSlider<float>(
@@ -160,6 +163,7 @@ namespace WorldTweaker
 			new List<OptionSlider<float>>
 			{
 				new OptionSlider<float>(0f, "Zero"),
+				new OptionSlider<float>(0.01f, "1/100 vanilla"),
 				new OptionSlider<float>(0.1f, "1/10 vanilla"),
 				new OptionSlider<float>(0.25f, "1/4 vanilla"),
 				new OptionSlider<float>(0.33f, "1/3 vanilla"),
@@ -172,7 +176,7 @@ namespace WorldTweaker
 				new OptionSlider<float>(10f, "10x vanilla"),
 				new OptionSlider<float>(100f, "100x vanilla"),
 			},
-			6
+			7
 		);
 
 		internal IndexSlider<float> MunkasSpawnRate = new IndexSlider<float>(
@@ -180,6 +184,7 @@ namespace WorldTweaker
 			new List<OptionSlider<float>>
 			{
 				new OptionSlider<float>(0f, "Zero"),
+				new OptionSlider<float>(0.01f, "1/100 vanilla"),
 				new OptionSlider<float>(0.1f, "1/10 vanilla"),
 				new OptionSlider<float>(0.25f, "1/4 vanilla"),
 				new OptionSlider<float>(0.33f, "1/3 vanilla"),
@@ -192,7 +197,7 @@ namespace WorldTweaker
 				new OptionSlider<float>(10f, "10x vanilla"),
 				new OptionSlider<float>(100f, "100x vanilla"),
 			},
-			6
+			7
 		);
 
 		internal IndexSlider<float> FluidAmount = new IndexSlider<float>(
@@ -201,6 +206,7 @@ namespace WorldTweaker
 			new List<OptionSlider<float>>
 			{
 				new OptionSlider<float>(0f, "Always empty"),
+				new OptionSlider<float>(0.01f, "1/100 vanilla"),
 				new OptionSlider<float>(0.1f, "1/10 vanilla"),
 				new OptionSlider<float>(0.25f, "1/4 vanilla"),
 				new OptionSlider<float>(0.33f, "1/3 vanilla"),
@@ -213,7 +219,7 @@ namespace WorldTweaker
 				new OptionSlider<float>(10f, "10x vanilla"),
 				new OptionSlider<float>(100f, "100x vanilla"),
 			},
-			6
+			7
 		);
 
 		internal IndexSlider<int> CrateModifier = new IndexSlider<int>(
