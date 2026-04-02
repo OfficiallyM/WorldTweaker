@@ -68,6 +68,7 @@ namespace WorldTweaker.Harmony
 				for (int i = 0; i < roadData.coords.Length; i++)
 				{
 					var helper = new GameObject("RoadAlignHelper");
+					helper.transform.SetParent(__instance.transform, true);
 					helper.transform.position = new Vector3(
 						(float)(__instance.roads[pi].posX + __instance.world2.coord.x) + roadData.coords[i].x,
 						(float)(__instance.roads[pi].posY + __instance.world2.coord.y) + roadData.coords[i].y,
