@@ -10,10 +10,6 @@ namespace WorldTweaker.Components
 
 		public void Start()
 		{
-			// TODO:
-			// - Add coconut spawning
-			// - Coconuts should fall out of the tree at random, when grabbed,
-			//	 when something is thrown at one or something hits the tree with enough force.
 			Destroy(transform.GetComponent<breakablescript>());
 			Destroy(transform.GetComponent<materialChangeScript>());
 			Destroy(transform.GetComponent<grassscript>());
