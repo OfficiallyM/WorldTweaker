@@ -44,8 +44,16 @@ namespace WorldTweaker.Components
 			renderer.material = lavaMaterial;
 			Lava.AddComponent<Lava>().material = lavaMaterial;
 
+			// Coconuts.
 			Coconut.AddComponent<Coconut>();
 			SetupObject(Coconut, 0);
+			var coconutToSave = Coconut.GetComponent<tosaveitemscript>();
+			var coconutTank = Coconut.CopyComponent(itemdatabase.d.gcactigib01.GetComponent<tankscript>());
+			coconutTank.tosaveid = coconutToSave.idInSave;
+			coconutTank.F.ChangeOne(0.5f, mainscript.fluidenum.water);
+			coconutToSave.tanks = new tankscript[] { coconutTank };
+			var coconutPickup = Coconut.GetComponent<pickupable>();
+			coconutPickup.tank = coconutTank;
 		}
 
 		public tosaveitemscript MakeSavable(GameObject obj, int id)
@@ -56,6 +64,7 @@ namespace WorldTweaker.Components
 			var toSave = obj.AddComponent<tosaveitemscript>();
 			toSave.category = WorldTweaker.Category;
 			toSave.id = id;
+			toSave.RB = obj.GetComponent<Rigidbody>();
 			toSave.randomizetanks = new tankscript[0];
 			toSave.partconditions = new partconditionscript[0];
 			toSave.tanks = new tankscript[0];
