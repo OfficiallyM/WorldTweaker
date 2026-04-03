@@ -15,7 +15,10 @@ namespace WorldTweaker.Components
 			_pickup = GetComponent<pickupable>();
 
 			if (Tree != null)
+			{
 				_rb.useGravity = false;
+				_rb.isKinematic = true;
+			}
 		}
 
 		public void Update()
@@ -28,6 +31,7 @@ namespace WorldTweaker.Components
 		{
 			transform.SetParent(null, true);
 			_rb.useGravity = true;
+			_rb.isKinematic = false;
 			Tree.Coconuts.Remove(this);
 			Tree = null;
 			WorldTweaker.Prefabs.MakeSavable(gameObject, 0)?.FStart();

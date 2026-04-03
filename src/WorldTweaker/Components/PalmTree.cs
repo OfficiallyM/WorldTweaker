@@ -21,16 +21,19 @@ namespace WorldTweaker.Components
 			palm.transform.localRotation = Quaternion.Euler(270f, 0f, 0f);
 			palm.transform.localScale = Vector3.one * Random.Range(0.8f, 1.2f);
 
-			var rb = gameObject.GetComponent<Rigidbody>();
-			if (rb == null)
-				rb = gameObject.AddComponent<Rigidbody>();
-			rb.isKinematic = true;
-
 			// Disable any default object children.
 			foreach (Transform child in palm.transform.parent)
 			{
 				if (child == palm.transform) continue;
 				child.gameObject.SetActive(false);
+			}
+
+			// Handle tree impacts.
+			foreach (var collider in palm.GetComponentsInChildren<Collider>())
+			{
+				collider.isTrigger = true;
+				var listener = collider.gameObject.AddComponent<PalmTreeImpactListener>();
+				listener.Tree = this;
 			}
 
 			// Coconut spawns.
@@ -61,30 +64,40 @@ namespace WorldTweaker.Components
 			}
 		}
 
-		public void OnCollisionEnter(Collision collision)
+		public void OnImpact(Rigidbody hitRb)
 		{
 			if (Coconuts.Count == 0)
 				return;
 
-			float targetMagnitude = 20f;
-			if (collision.rigidbody == mainscript.M.player.RB)
-				targetMagnitude = 5f;
-			if (collision.relativeVelocity.magnitude > targetMagnitude)
+			bool isPlayer = hitRb == mainscript.M.player.RB;
+			float speed = hitRb.velocity.magnitude;
+			float targetMagnitude = isPlayer ? 5f : 20f;
+
+			if (speed > targetMagnitude)
 			{
-				// Player hit the tree themselves, drop a random coconut.
-				if (targetMagnitude == 5f)
+				if (isPlayer)
 				{
 					Coconuts[Random.Range(0, Coconuts.Count - 1)].Drop();
 				}
 				else
 				{
-					// Something else hit the tree with some force, drop all coconuts.
 					foreach (var coconut in Coconuts)
-					{
 						coconut.Drop();
-					}
 				}
 			}
+		}
+	}
+
+	internal class PalmTreeImpactListener : MonoBehaviour
+	{
+		public PalmTree Tree;
+
+		private void OnTriggerEnter(Collider other)
+		{
+			var rb = other.attachedRigidbody;
+			if (rb == null) return;
+
+			Tree.OnImpact(rb);
 		}
 	}
 }
