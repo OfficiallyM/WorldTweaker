@@ -7,23 +7,26 @@ namespace WorldTweaker.Components
 	{
 		public PalmTree Tree;
 		private Rigidbody _rb;
-		private tosaveitemscript _toSave;
+		private pickupable _pickup;
 
 		public void Start()
 		{
 			_rb = GetComponent<Rigidbody>();
-			_toSave = gameObject.GetComponent<tosaveitemscript>();
+			_pickup = GetComponent<pickupable>();
 
 			if (Tree != null)
-			{
 				_rb.useGravity = false;
-				Destroy(_toSave);
-				_toSave = null;
-			}
+		}
+
+		public void Update()
+		{
+			if (Tree != null && _pickup.pickedUp)
+				Drop();
 		}
 
 		public void Drop()
 		{
+			transform.SetParent(null, true);
 			_rb.useGravity = true;
 			Tree.Coconuts.Remove(this);
 			Tree = null;

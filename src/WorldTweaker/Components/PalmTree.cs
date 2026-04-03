@@ -48,7 +48,11 @@ namespace WorldTweaker.Components
 			for (int i = 0; i < coconutCount; i++)
 			{
 				Transform spawn = coconutSpawns[i];
-				var coconutObj = GameObject.Instantiate(WorldTweaker.Prefabs.Coconut, spawn.position, Quaternion.identity);
+				var coconutObj = GameObject.Instantiate(WorldTweaker.Prefabs.Coconut);
+				coconutObj.transform.SetParent(spawn);
+				coconutObj.transform.localRotation = Quaternion.identity;
+				coconutObj.transform.localPosition = Vector3.zero;
+				Destroy(coconutObj.GetComponent<tosaveitemscript>());
 				var coconut = coconutObj.GetComponent<Coconut>();
 				if (coconut == null)
 					continue;
