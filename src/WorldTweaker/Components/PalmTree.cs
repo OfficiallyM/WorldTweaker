@@ -31,7 +31,7 @@ namespace WorldTweaker.Components
 			// Handle tree impacts.
 			foreach (var collider in palm.GetComponentsInChildren<Collider>())
 			{
-				collider.isTrigger = true;
+				//collider.isTrigger = true;
 				var listener = collider.gameObject.AddComponent<PalmTreeImpactListener>();
 				listener.Tree = this;
 			}
