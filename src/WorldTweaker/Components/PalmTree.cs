@@ -10,6 +10,9 @@ namespace WorldTweaker.Components
 
 		public void Start()
 		{
+			if (WorldTweaker.I.WorldType.Value != 2f)
+				return;
+
 			Destroy(transform.GetComponent<breakablescript>());
 			Destroy(transform.GetComponent<materialChangeScript>());
 			Destroy(transform.GetComponent<grassscript>());
