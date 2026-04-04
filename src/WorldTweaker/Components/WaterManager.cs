@@ -232,7 +232,7 @@ namespace WorldTweaker.Components
 			if (LiquidTiles.ContainsKey(terrain)) return;
 
 			var liquidHeight = new Vector3(terrain.transform.position.x, (float)mainscript.M.mainWorld.coord.y + WaterHeight, terrain.transform.position.z);
-			var liquid = GameObject.Instantiate(WorldTweaker.Prefabs.Water, liquidHeight, Quaternion.identity);
+			var liquid = GameObject.Instantiate(GetLiquidTypePrefab(liquidType), liquidHeight, Quaternion.identity);
 			liquid.transform.SetParent(WorldTweaker.Water.WaterParent);
 			var worldOffset = new Vector3(
 				(float)mainscript.M.mainWorld.coord.x,
@@ -289,6 +289,19 @@ namespace WorldTweaker.Components
 				GameObject.Destroy(WorldTweaker.Water.LiquidTiles[terrain].controller.gameObject);
 				WorldTweaker.Water.LiquidTiles.Remove(terrain);
 			}
+		}
+
+		private GameObject GetLiquidTypePrefab(LiquidType liquid)
+		{
+			switch (liquid)
+			{
+				case LiquidType.Water:
+					return WorldTweaker.Prefabs.Water;
+				case LiquidType.Lava:
+					return WorldTweaker.Prefabs.Lava;
+			}
+
+			return null;
 		}
 	}
 }
