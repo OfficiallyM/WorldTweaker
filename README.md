@@ -16,7 +16,8 @@ Allows you to alter the following world settings:
   - Controls the quantity of fluids that spawn in containers and building taps
 - Crate modifier
   - Allows modifying crates to reduce the quantity of items and randomise their conditions
-- World type
+- Munkas spawn rate
+- World types
   - Flat worlds
   - Vanilla world
   - Canyon
