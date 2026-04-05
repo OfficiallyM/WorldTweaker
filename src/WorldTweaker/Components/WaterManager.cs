@@ -239,14 +239,14 @@ namespace WorldTweaker.Components
 				0,
 				(float)mainscript.M.mainWorld.coord.z
 			);
-			var size = (TerrainGenerationSettings.staticReference.defDistantTerrainSize / 2f) - 278f;
+			var size = TerrainGenerationSettings.staticReference.Terrain.tileSize;
 			switch (terrainType)
 			{
 				case TerrainType.Close:
-					size = TerrainGenerationSettings.staticReference.defTerrainSize;
+					size = TerrainGenerationSettings.staticReference.DistantTerrain.tileSize;
 					break;
 				case TerrainType.Distant2:
-					size = (TerrainGenerationSettings.staticReference.defDistantTerrain2Size / 2f) + 2954f;
+					size = TerrainGenerationSettings.staticReference.DistantTerrain2.tileSize;
 					break;
 			}
 			var mesh = GenerateWaterMesh(
@@ -302,6 +302,17 @@ namespace WorldTweaker.Components
 			}
 
 			return null;
+		}
+
+		public bool WorldHasLiquidTiles(float worldType)
+		{
+			switch (worldType)
+			{
+				case 2f:
+				case 3f:
+					return true;
+			}
+			return false;
 		}
 	}
 }

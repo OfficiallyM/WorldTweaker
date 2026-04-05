@@ -88,6 +88,9 @@ namespace WorldTweaker.Harmony
 				terrain.meshcollider.sharedMesh = mesh;
 			}
 
+			if (!WorldTweaker.Water.WorldHasLiquidTiles(worldType))
+				return;
+
 			// Liquid tile generation.
 			// Distant terrain is enabled, let that handle liquid tiles.
 			if (settingsscript.s.S.BFarTerrain)
@@ -130,6 +133,9 @@ namespace WorldTweaker.Harmony
 					terrain.meshcollider.sharedMesh = mesh;
 			}
 
+			if (!WorldTweaker.Water.WorldHasLiquidTiles(worldType))
+				return;
+
 			// Liquid tile generation.
 			// Distant terrain 2 is enabled, let that handle liquid tiles.
 			if (__instance.manager.settings.GenerateDistantTerrain2)
@@ -171,6 +177,9 @@ namespace WorldTweaker.Harmony
 					terrain.meshcollider.sharedMesh = mesh;
 			}
 
+			if (!WorldTweaker.Water.WorldHasLiquidTiles(worldType))
+				return;
+
 			// Liquid tile generation.
 			var liquidType = WaterManager.LiquidType.Water;
 			switch (worldType)
@@ -192,10 +201,9 @@ namespace WorldTweaker.Harmony
 		{
 			var worldType = WorldTweaker.I.WorldType.Value;
 
-			if (worldType == 2f || worldType == 3f)
-			{
-				WorldTweaker.Water.RemoveTiles(WaterManager.TerrainType.Close, __instance);
-			}
+			if (!WorldTweaker.Water.WorldHasLiquidTiles(worldType))
+				return;
+			WorldTweaker.Water.RemoveTiles(WaterManager.TerrainType.Close, __instance);
 		}
 	}
 
@@ -206,10 +214,9 @@ namespace WorldTweaker.Harmony
 		{
 			var worldType = WorldTweaker.I.WorldType.Value;
 
-			if (worldType == 2f || worldType == 3f)
-			{
-				WorldTweaker.Water.RemoveTiles(WaterManager.TerrainType.Distant, __instance);
-			}
+			if (!WorldTweaker.Water.WorldHasLiquidTiles(worldType))
+				return;
+			WorldTweaker.Water.RemoveTiles(WaterManager.TerrainType.Distant, __instance);
 		}
 	}
 
@@ -220,10 +227,9 @@ namespace WorldTweaker.Harmony
 		{
 			var worldType = WorldTweaker.I.WorldType.Value;
 
-			if (worldType == 2f || worldType == 3f)
-			{
-				WorldTweaker.Water.RemoveTiles(WaterManager.TerrainType.Distant2, __instance);
-			}
+			if (!WorldTweaker.Water.WorldHasLiquidTiles(worldType))
+				return;
+			WorldTweaker.Water.RemoveTiles(WaterManager.TerrainType.Distant2, __instance);
 		}
 	}
 
