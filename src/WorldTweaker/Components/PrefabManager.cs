@@ -88,13 +88,15 @@ namespace WorldTweaker.Components
 
 		private void SetupObject(GameObject obj, int id, bool pickupable = true, bool attachable = true, Sprite invImg = null)
 		{
-			var toSave = MakeSavable(Coconut, 0);
+			var toSave = MakeSavable(obj, 0);
+
+			obj.CopyComponent(itemdatabase.d.gww2compass.GetComponent<visszarako>());
 
 			var rb = obj.GetComponent<Rigidbody>();
 			if (rb == null)
 				return;
 
-			var mass = Coconut.AddComponent<massScript>();
+			var mass = obj.AddComponent<massScript>();
 			mass.SetMass(rb.mass);
 
 			if (!pickupable)

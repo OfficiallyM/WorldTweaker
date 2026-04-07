@@ -35,6 +35,8 @@ namespace WorldTweaker.Components
 			Tree.Coconuts.Remove(this);
 			Tree = null;
 			WorldTweaker.Prefabs.MakeSavable(gameObject, 0)?.FStart();
+			var originShift = gameObject.GetComponent<visszarako>();
+			originShift.RB = _rb;
 		}
 	}
 }
