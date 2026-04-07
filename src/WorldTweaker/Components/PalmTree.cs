@@ -17,7 +17,13 @@ namespace WorldTweaker.Components
 			Destroy(transform.GetComponent<materialChangeScript>());
 			Destroy(transform.GetComponent<grassscript>());
 
-			System.Random rng = new System.Random(transform.position.ToString("F3").GetHashCode());
+			var worldOffset = new Vector3(
+				(float)mainscript.M.mainWorld.coord.x,
+				(float)mainscript.M.mainWorld.coord.y,
+				(float)mainscript.M.mainWorld.coord.z
+			);
+			var seed = Hash.FNV1((transform.position - worldOffset).ToString("F2"));
+			System.Random rng = new System.Random(seed);
 			var prefab = WorldTweaker.Prefabs.PalmTrees[rng.Next(WorldTweaker.Prefabs.PalmTrees.Length)];
 			var palm = Instantiate(prefab, transform, false);
 			palm.transform.localPosition = Vector3.zero;
